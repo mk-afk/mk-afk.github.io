@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!--
+  ─────────────────────────────────────────────────────────────
+  notes · the quiet page (companion to index.html)
+
+  ADDING A POST (two small steps):
+    1. add one entry row in the <nav class="links"> index —
+       it can point to an inline post (#your-id) or straight
+       to an external link (arxiv, pdf, colab).
+    2. if it's an inline post, duplicate an <article class="post">
+       below, matching the id. newest on top in both places.
+
+  THEME: dark (night pond) is the default. the ☀/☾ button
+  switches to a paper day mode and remembers the choice.
+
+  the pond here is the calm version: ripples, lily pads,
+  drifting light, rain at night. the koi sleep — instead a
+  school of small fish runs the page (boids: separation,
+  alignment, cohesion). tap the water to scatter them.
+
+  files: blog.html + notes.css + notes.js
+  ─────────────────────────────────────────────────────────────
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- EDIT: your name -->
+<title>notes — your name</title>
+<meta name="description" content="Irregular notes on ML, research, and small systems.">
+<meta name="theme-color" content="#0a1715">
+<meta property="og:title" content="notes — your name">
+<meta property="og:description" content="Irregular notes on ML, research, and small systems.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
+<link rel="stylesheet" href="notes.css">
+</head>
+<body>
+
+<div id="scene" aria-hidden="true">
+  <canvas id="pond"></canvas>
+</div>
+<div id="dim" aria-hidden="true"></div>
+
+<div class="page">
+  <h1>notes</h1>
+  <!-- EDIT: one line on what this page is -->
+  <p class="bio">Irregular writing on ML, small systems, and this koi pond. Newest first, no schedule.</p>
+  <!-- EDIT: your links -->
+  <p class="toplinks">
+    <a href="index.html">← the pond</a> |
+    <a href="mailto:you@example.com">Email</a> |
+    <a href="#">GitHub</a> |
+    <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
+    <button id="rainBtn" class="tbtn" aria-pressed="false" title="toggle rain sound">♪ rain off</button>
+  </p>
+
+  <!-- EDIT: the index. one row per post — point at an inline
+       article below (#id) or at an external link (arxiv, pdf). -->
+  <nav class="links" aria-label="all notes">
+    <h3>notes + experiments</h3>
+    <a href="#hello-pond">
+      <span class="link-content">&gt; <strong>[meta]</strong> hello, pond</span>
+      <span class="link-date">Jun 12, 2026</span>
+    </a>
+
+    <h3>misc</h3>
+    <a href="#your-next-post">
+      <span class="link-content">&gt; <strong>[stub]</strong> a second post goes here</span>
+      <span class="link-date">20XX</span>
+    </a>
+  </nav>
+
+  <div class="posts">
+    <article class="post" id="hello-pond">
+      <h2>hello, pond <a class="anchor" href="#hello-pond" aria-label="permalink to this post">#</a></h2>
+      <p class="pdate">Jun 12, 2026 · <span class="tag">meta</span> <span class="tag">canvas</span></p>
+      <p>This site needed a reason to exist beyond holding a resume, so I gave it one: a pond. Everything swimming on the home page is procedural. No sprites, no video files, just a canvas and some geometry.</p>
+      <p>Each koi is a chain of 26 points. The head steers, and every point behind it follows the one ahead at a fixed distance. That constraint is the entire skeleton, three lines:</p>
+      <pre><code>const d = Math.hypot(dx, dy) || 1;
+cx[i] = cx[i-1] + (dx / d) * segLen;
+cy[i] = cy[i-1] + (dy / d) * segLen;</code></pre>
+      <p>A sine wave travels down the spine to make it swim, the body is an outline drawn at varying widths along those points, and depth is faked by tinting everything toward the water color. The markings are random blobs fixed per fish, so every visitor gets koi nobody else has seen.</p>
+      <p>I'll write here occasionally about whatever I'm building or reading. No schedule. The fish don't keep one either.</p>
+    </article>
+
+    <article class="post" id="your-next-post">
+      <h2>a second post goes here <a class="anchor" href="#your-next-post" aria-label="permalink to this post">#</a></h2>
+      <p class="pdate">20XX-XX-XX · <span class="tag">placeholder</span></p>
+      <p>Duplicate the article block above this one, give it a fresh id and date, add a matching row to the index up top, and delete this stub. Newest stays at the top in both places.</p>
+    </article>
+  </div>
+
+  <p class="note">// rss can come later. write three posts first.</p>
+</div>
+
+<footer>
+  · fin · &nbsp;© 2026 Your Name · <a href="index.html">back to the pond</a>
+</footer>
+
+<script src="notes.js"></script>
+</body>
+</html>
