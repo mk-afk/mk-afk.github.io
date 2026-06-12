@@ -34,6 +34,9 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="notes.css">
 </head>
 <body>
@@ -43,17 +46,28 @@
 </div>
 <div id="dim" aria-hidden="true"></div>
 
+<nav aria-label="site">
+  <a class="brand" href="index.html"><span class="h">~</span>/koipond</a>
+  <div class="navlinks">
+    <a class="navlink" href="index.html">home</a>
+    <a class="navlink" href="index.html#projects">projects</a>
+    <a class="navlink" href="index.html#papers">papers</a>
+    <a class="navlink active" href="blog.html" aria-current="page">notes</a>
+    <a class="navlink" href="index.html#resume">resume</a>
+    <a class="navlink" href="index.html#contact">contact</a>
+  </div>
+  <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
+  <button id="rainBtn" class="tbtn" aria-pressed="false" title="toggle rain sound">♪ rain off</button>
+</nav>
+
 <div class="page">
   <h1>notes</h1>
   <!-- EDIT: one line on what this page is -->
   <p class="bio">Irregular writing on ML, small systems, and this koi pond. Newest first, no schedule.</p>
   <!-- EDIT: your links -->
   <p class="toplinks">
-    <a href="index.html">← the pond</a> |
     <a href="mailto:you@example.com">Email</a> |
-    <a href="#">GitHub</a> |
-    <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
-    <button id="rainBtn" class="tbtn" aria-pressed="false" title="toggle rain sound">♪ rain off</button>
+    <a href="#">GitHub</a>
   </p>
 
   <!-- EDIT: the index. one row per post — point at an inline
