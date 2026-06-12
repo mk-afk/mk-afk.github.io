@@ -14,6 +14,10 @@
   --rule:   rgba(151,200,176,.16);
   --codebg: rgba(4,10,9,.55);
   --sel:    rgba(232,176,126,.28);
+  --navbg:    rgba(8,18,16,.72);
+  --navhover: rgba(151,200,176,.08);
+  --navactive:rgba(232,176,126,.12);
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 html[data-theme="light"]{
   --bg:     #fffefb;
@@ -26,6 +30,9 @@ html[data-theme="light"]{
   --rule:   #e7e2d6;
   --codebg: #f4f1e7;
   --sel:    rgba(232,114,79,.22);
+  --navbg:    rgba(255,254,251,.82);
+  --navhover: rgba(15,77,64,.08);
+  --navactive:rgba(232,71,43,.1);
 }
 *{ box-sizing:border-box }
 html{ scrollbar-color:#23433a var(--bg) }
@@ -66,11 +73,35 @@ html[data-theme="light"] body::after{ mix-blend-mode:multiply; opacity:.045 }
 }
 html[data-theme="light"] #dim{ opacity:0 }
 
+/* ── site toolbar (matches home, follows the theme) ─────── */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; gap:14px;
+  padding:9px 22px;
+  background:var(--navbg);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule);
+  font-family:var(--mono);
+  font-size:13px;
+  overflow-x:auto; scrollbar-width:none;
+}
+nav::-webkit-scrollbar{ display:none }
+.brand{ color:var(--soft); text-decoration:none; white-space:nowrap }
+.brand:hover{ color:var(--ink) }
+.brand .h{ color:var(--link) }
+.navlinks{ display:flex; gap:4px; margin-left:auto }
+.navlink{
+  color:var(--soft); text-decoration:none; padding:4px 10px;
+  border-radius:6px; white-space:nowrap;
+}
+.navlink:hover{ color:var(--ink); background:var(--navhover) }
+.navlink.active{ color:var(--link); background:var(--navactive) }
+
 /* ── page (the reference's chrome-free layout) ──────────── */
 .page{
   position:relative; z-index:30;
   max-width:56rem;
-  padding:48px 56px 30px;
+  padding:86px 56px 30px;
 }
 h1{
   margin:0 0 10px;
@@ -82,7 +113,7 @@ h1{
 .toplinks a{ color:var(--ink); text-decoration:none }
 .toplinks a:hover{ color:var(--hot); text-decoration:underline }
 .tbtn{
-  font:inherit; font-size:13px; color:var(--soft);
+  font:inherit; font-size:13px; color:var(--soft); white-space:nowrap;
   background:none; border:none; padding:0; cursor:pointer;
 }
 .tbtn:hover{ color:var(--hot); text-decoration:underline }
@@ -114,7 +145,7 @@ html[data-theme="light"] #rainBtn{ display:none }
   border-top:1px solid var(--rule);
   padding:26px 0 10px;
   max-width:72ch;
-  scroll-margin-top:18px;
+  scroll-margin-top:64px;
 }
 .post h2{ margin:0 0 4px; font-size:17px; font-weight:600; color:var(--head) }
 .post h2 .anchor{ color:var(--soft); text-decoration:none; margin-left:8px; font-weight:400 }
@@ -146,7 +177,7 @@ footer{
 
 @media (max-width:680px){
   #scene{ display:none }           /* like the reference: solid page on mobile */
-  .page{ padding:28px 24px 20px }
+  .page{ padding:72px 24px 20px }
   footer{ padding:40px 24px 30px }
   h1{ font-size:32px }
 }
