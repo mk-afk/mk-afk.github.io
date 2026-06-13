@@ -6,11 +6,10 @@
   notes · the quiet page (companion to index.html)
 
   ADDING A POST (two small steps):
-    1. add one entry row in the <nav class="links"> index —
-       it can point to an inline post (#your-id) or straight
-       to an external link (arxiv, pdf, colab).
-    2. if it's an inline post, duplicate an <article class="post">
-       below, matching the id. newest on top in both places.
+    1. copy posts/hello-pond.html to posts/your-title.html
+       and write in it.
+    2. add one entry row to the index below — rows can also
+       point straight at external links (arxiv, pdf, colab).
 
   THEME: dark (night pond) is the default. the ☀/☾ button
   switches to a paper day mode and remembers the choice.
@@ -20,7 +19,7 @@
   school of small fish runs the page (boids: separation,
   alignment, cohesion). tap the water to scatter them.
 
-  files: blog.html + notes.css + notes.js
+  files: blog.html + notes.css + notes.js + posts/*.html
   ─────────────────────────────────────────────────────────────
 -->
 <meta charset="utf-8">
@@ -74,37 +73,42 @@
        article below (#id) or at an external link (arxiv, pdf). -->
   <nav class="links" aria-label="all notes">
     <h3>notes + experiments</h3>
-    <a href="#hello-pond">
+    <a href="posts/hello-pond.html">
       <span class="link-content">&gt; <strong>[meta]</strong> hello, pond</span>
       <span class="link-date">Jun 12, 2026</span>
     </a>
 
-    <h3>misc</h3>
-    <a href="#your-next-post">
-      <span class="link-content">&gt; <strong>[stub]</strong> a second post goes here</span>
-      <span class="link-date">20XX</span>
+    <!-- to add a post: copy posts/hello-pond.html, write in it,
+         then add a row like this:
+    <a href="posts/my-new-post.html">
+      <span class="link-content">&gt; <strong>[tag]</strong> my new post</span>
+      <span class="link-date">Mon DD, YYYY</span>
+    </a>
+    -->
+
+    <h3>around the site</h3>
+    <a href="index.html">
+      <span class="link-content">&gt; home (the pond)</span>
+      <span class="link-date"></span>
+    </a>
+    <a href="index.html#projects">
+      <span class="link-content">&gt; projects</span>
+      <span class="link-date"></span>
+    </a>
+    <a href="index.html#papers">
+      <span class="link-content">&gt; papers</span>
+      <span class="link-date"></span>
+    </a>
+    <a href="index.html#resume">
+      <span class="link-content">&gt; resume</span>
+      <span class="link-date"></span>
+    </a>
+    <a href="index.html#contact">
+      <span class="link-content">&gt; contact</span>
+      <span class="link-date"></span>
     </a>
   </nav>
 
-  <div class="posts">
-    <article class="post" id="hello-pond">
-      <h2>hello, pond <a class="anchor" href="#hello-pond" aria-label="permalink to this post">#</a></h2>
-      <p class="pdate">Jun 12, 2026 · <span class="tag">meta</span> <span class="tag">canvas</span></p>
-      <p>This site needed a reason to exist beyond holding a resume, so I gave it one: a pond. Everything swimming on the home page is procedural. No sprites, no video files, just a canvas and some geometry.</p>
-      <p>Each koi is a chain of 26 points. The head steers, and every point behind it follows the one ahead at a fixed distance. That constraint is the entire skeleton, three lines:</p>
-      <pre><code>const d = Math.hypot(dx, dy) || 1;
-cx[i] = cx[i-1] + (dx / d) * segLen;
-cy[i] = cy[i-1] + (dy / d) * segLen;</code></pre>
-      <p>A sine wave travels down the spine to make it swim, the body is an outline drawn at varying widths along those points, and depth is faked by tinting everything toward the water color. The markings are random blobs fixed per fish, so every visitor gets koi nobody else has seen.</p>
-      <p>I'll write here occasionally about whatever I'm building or reading. No schedule. The fish don't keep one either.</p>
-    </article>
-
-    <article class="post" id="your-next-post">
-      <h2>a second post goes here <a class="anchor" href="#your-next-post" aria-label="permalink to this post">#</a></h2>
-      <p class="pdate">20XX-XX-XX · <span class="tag">placeholder</span></p>
-      <p>Duplicate the article block above this one, give it a fresh id and date, add a matching row to the index up top, and delete this stub. Newest stays at the top in both places.</p>
-    </article>
-  </div>
 
   <p class="note">// rss can come later. write three posts first.</p>
 </div>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!-- A POST PAGE. To write another: copy this file to posts/your-title.html,
+     change the <title>, the <h1>, the date line, and the body. Then add a
+     row linking to it in the index in ../blog.html. Paths use ../ because
+     this file lives one folder deep. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hello, pond — notes</title>
+<meta name="description" content="How the koi on this site are drawn.">
+<meta name="theme-color" content="#0a1715">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../notes.css">
+</head>
+<body>
+
+<nav aria-label="site">
+  <a class="brand" href="../index.html"><span class="h">~</span>/koipond</a>
+  <div class="navlinks">
+    <a class="navlink" href="../index.html">home</a>
+    <a class="navlink" href="../index.html#projects">projects</a>
+    <a class="navlink" href="../index.html#papers">papers</a>
+    <a class="navlink active" href="../blog.html" aria-current="page">notes</a>
+    <a class="navlink" href="../index.html#resume">resume</a>
+    <a class="navlink" href="../index.html#contact">contact</a>
+  </div>
+  <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
+</nav>
+
+<div class="page">
+  <p class="toplinks"><a href="../blog.html">← all notes</a></p>
+
+  <article class="post" style="border-top:0; padding-top:4px">
+    <h1>hello, pond</h1>
+    <p class="pdate">Jun 12, 2026 · <span class="tag">meta</span> <span class="tag">canvas</span></p>
+
+    <p>This site needed a reason to exist beyond holding a resume, so I gave it one: a pond. Everything swimming on the home page is procedural. No sprites, no video files, just a canvas and some geometry.</p>
+
+    <p>Each koi is a chain of 26 points. The head steers, and every point behind it follows the one ahead at a fixed distance. That constraint is the entire skeleton, three lines:</p>
+    <pre><code>const d = Math.hypot(dx, dy) || 1;
+cx[i] = cx[i-1] + (dx / d) * segLen;
+cy[i] = cy[i-1] + (dy / d) * segLen;</code></pre>
+
+    <p>A sine wave travels down the spine to make it swim, the body is an outline drawn at varying widths along those points, and depth is faked by tinting everything toward the water color. The markings are random blobs fixed per fish, so every visitor gets koi nobody else has seen.</p>
+
+    <p>I'll write here occasionally about whatever I'm building or reading. No schedule. The fish don't keep one either.</p>
+  </article>
+
+  <p class="note">// <a href="../blog.html">back to all notes</a></p>
+</div>
+
+<footer>
+  · fin · &nbsp;© 2026 Your Name · <a href="../index.html">back to the pond</a>
+</footer>
+
+<script>
+/* tiny theme sync — shares the "pond-theme" choice with the rest of the site.
+   no pond scene on post pages: reading comes first. */
+(() => {
+  'use strict';
+  const btn = document.getElementById('themeBtn');
+  function apply(t) {
+    document.documentElement.dataset.theme = t;
+    btn.textContent = t === 'dark' ? '\u2600 day' : '\u263e night';
+    btn.setAttribute('aria-pressed', String(t === 'light'));
+    try { localStorage.setItem('pond-theme', t); } catch (e) {}
+  }
+  let saved = 'dark';
+  try { saved = localStorage.getItem('pond-theme') || 'dark'; } catch (e) {}
+  apply(saved);
+  btn.addEventListener('click', () =>
+    apply(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+})();
+</script>
+</body>
+</html>

@@ -21,10 +21,35 @@ const angDiff = a => Math.atan2(Math.sin(a), Math.cos(a));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mqlMobile = matchMedia('(max-width:880px)');
 
-function tint(hex, d, a = 1) { // sink a color into the murk
-  const k = clamp(0.08 + d * 0.72, 0, 0.78);
+/* ── day / night scene palettes ───────────────────────────── */
+const SCENE = {
+  dark: {
+    murk: 'rgba(6,16,13,', koiShadow: 'rgba(3,11,9,0.26)', outline: '#04100d', outA: 0.08,
+    tintT: [13, 35, 30], tintK: d => clamp(0.08 + d * 0.72, 0, 0.78),
+    pad: '#22362f', padStroke: 'rgba(0,0,0,0.35)', vein: 'rgba(6,16,13,0.5)',
+    drop: 'rgba(205,228,213,', dropMul: 1, rim: 'rgba(160,220,190,0.07)',
+    padShadow: 'rgba(2,8,7,0.32)',
+    ripple: 'rgba(190,230,210,', glint: 'rgba(220,245,230,',
+    caustic: 'rgba(120,200,170,', causticA: 0.035, causticComp: 'lighter',
+  },
+  light: {
+    murk: 'rgba(252,250,245,', koiShadow: 'rgba(95,110,98,0.16)', outline: '#3a4a40', outA: 0.15,
+    tintT: [250, 247, 241], tintK: d => clamp(0.05 + d * 0.5, 0, 0.6),
+    pad: '#9fb785', padStroke: 'rgba(70,90,55,0.35)', vein: 'rgba(74,96,60,0.45)',
+    drop: 'rgba(255,255,255,', dropMul: 2.4, rim: 'rgba(255,255,255,0.5)',
+    padShadow: 'rgba(96,112,92,0.18)',
+    ripple: 'rgba(70,130,112,', glint: 'rgba(255,255,255,',
+    caustic: 'rgba(110,185,160,', causticA: 0.06, causticComp: 'source-over',
+  },
+};
+let theme = 'dark';
+const S = () => SCENE[theme];
+
+function tint(hex, d, a = 1) { // sink a color into the water
+  const P = S();
+  const k = P.tintK(d);
   const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${Math.round(lerp(r, 13, k))},${Math.round(lerp(g, 35, k))},${Math.round(lerp(b, 30, k))},${a})`;
+  return `rgba(${Math.round(lerp(r, P.tintT[0], k))},${Math.round(lerp(g, P.tintT[1], k))},${Math.round(lerp(b, P.tintT[2], k))},${a})`;
 }
 
 /* ── canvas ───────────────────────────────────────────────── */
@@ -57,6 +82,7 @@ function buildFloor() {
 }
 
 function drawBackground(t) {
+  if (theme === 'light') { ctx.clearRect(0, 0, W, H); return; } // paper shows through
   const g = ctx.createRadialGradient(W * 0.62, H * 0.42, 0, W * 0.62, H * 0.42, Math.max(W, H) * 0.9);
   g.addColorStop(0, '#0f2520');
   g.addColorStop(0.55, '#081714');
@@ -77,13 +103,13 @@ function drawBackground(t) {
 /* ── drifting light (murky caustic wisps) ─────────────────── */
 const caustics = [0, 1, 2].map(i => ({ s: rand(0, 9), r: rand(170, 320), i }));
 function drawCaustics(t) {
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = S().causticComp;
   for (const c of caustics) {
     const x = W * (0.5 + 0.38 * Math.sin(t * 0.021 + c.s * 2.1));
     const y = H * (0.5 + 0.34 * Math.cos(t * 0.016 + c.s * 1.3));
     const g = ctx.createRadialGradient(x, y, 0, x, y, c.r);
-    g.addColorStop(0, 'rgba(120,200,170,0.035)');
-    g.addColorStop(1, 'rgba(120,200,170,0)');
+    g.addColorStop(0, S().caustic + S().causticA + ')');
+    g.addColorStop(1, S().caustic + '0)');
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(x, y, c.r, 0, TAU); ctx.fill();
   }
@@ -139,17 +165,17 @@ function drawPads(t) {
     ctx.translate(p.x, p.y);
     // soft shadow on the water
     ctx.beginPath(); ctx.ellipse(4, 6, p.r, p.r * 0.94, 0, 0, TAU);
-    ctx.fillStyle = 'rgba(2,8,7,0.32)'; ctx.fill();
+    ctx.fillStyle = S().padShadow; ctx.fill();
     ctx.rotate(rot);
     // pad with a notch
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, p.r, 0.26, TAU - 0.26);
     ctx.closePath();
-    ctx.fillStyle = '#22362f'; ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = S().pad; ctx.fill();
+    ctx.strokeStyle = S().padStroke; ctx.lineWidth = 2; ctx.stroke();
     // veins
-    ctx.strokeStyle = 'rgba(6,16,13,0.5)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = S().vein; ctx.lineWidth = 1;
     for (let k = 0; k < 6; k++) {
       const a = 0.55 + k * ((TAU - 1.1) / 5);
       ctx.beginPath(); ctx.moveTo(0, 0);
@@ -159,11 +185,11 @@ function drawPads(t) {
     // resting droplets
     for (const q of p.sp) {
       ctx.beginPath(); ctx.arc(q.x, q.y, q.s, 0, TAU);
-      ctx.fillStyle = `rgba(205,228,213,${q.al})`; ctx.fill();
+      ctx.fillStyle = S().drop + (q.al * S().dropMul) + ')'; ctx.fill();
     }
     // wet rim highlight
     ctx.beginPath(); ctx.arc(0, 0, p.r, 0.26, TAU - 0.26);
-    ctx.strokeStyle = 'rgba(160,220,190,0.07)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = S().rim; ctx.lineWidth = 2; ctx.stroke();
     ctx.restore();
   }
 }
@@ -182,12 +208,12 @@ function drawRipples(dt) {
     p.r += ((p.maxR - p.r) * 1.7 + 16) * dt;
     const a = Math.max(0, p.a0 * (1 - p.r / p.maxR));
     if (p.r >= p.maxR * 0.985) { ripples.splice(i, 1); continue; }
-    ctx.strokeStyle = `rgba(190,230,210,${a})`;
+    ctx.strokeStyle = S().ripple + a + ')';
     ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.stroke();
-    ctx.strokeStyle = `rgba(190,230,210,${a * 0.55})`;
+    ctx.strokeStyle = S().ripple + (a * 0.55) + ')';
     ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 0.62, 0, TAU); ctx.stroke();
     if (p.r < 6) { // first-splash glint
-      ctx.fillStyle = `rgba(220,245,230,${a})`;
+      ctx.fillStyle = S().glint + a + ')';
       ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, TAU); ctx.fill();
     }
   }
@@ -369,7 +395,7 @@ class Koi {
     // shadow on the silt (higher fish → longer throw)
     const off = (7 + 15 * (1 - d)) * sz;
     ctx.save();
-    ctx.fillStyle = 'rgba(3,11,9,0.26)';
+    ctx.fillStyle = S().koiShadow;
     ctx.globalAlpha = fade * 0.42;
     ctx.translate(off * 0.6, off);
     ctx.fill(body);
@@ -435,16 +461,16 @@ class Koi {
       ctx.restore();
     }
     // shade into the water: dark inner rim + head→tail dissolve
-    ctx.strokeStyle = `rgba(6,16,13,${0.16 + d * 0.3})`;
+    ctx.strokeStyle = S().murk + (0.16 + d * 0.3) + ')';
     ctx.lineWidth = (2.2 + 2.8 * d) * sz;
     ctx.stroke(body); // straddles the outline; the outer half is clipped away
     const wg = ctx.createLinearGradient(px[0], py[0], px[n - 1], py[n - 1]);
-    wg.addColorStop(0, 'rgba(6,16,13,0)');
-    wg.addColorStop(0.5, `rgba(6,16,13,${0.06 + d * 0.1})`);
-    wg.addColorStop(1, `rgba(6,16,13,${0.78 + d * 0.18})`);
+    wg.addColorStop(0, S().murk + '0)');
+    wg.addColorStop(0.5, S().murk + (0.06 + d * 0.1) + ')');
+    wg.addColorStop(1, S().murk + (0.78 + d * 0.18) + ')');
     ctx.fillStyle = wg;
     ctx.fill(body);
-    if (d < 0.55) { // a touch of surface light on the back, near the head
+    if (theme === 'dark' && d < 0.55) { // a touch of surface light on the back, near the head
       const sg = ctx.createRadialGradient(px[4], py[4], 0, px[4], py[4], w[4] * 2.6);
       sg.addColorStop(0, `rgba(235,246,238,${0.12 * (1 - d * 1.6)})`);
       sg.addColorStop(1, 'rgba(235,246,238,0)');
@@ -468,8 +494,8 @@ class Koi {
       ctx.fill();
     }
     // soft cartoon outline
-    ctx.globalAlpha = fade * 0.08;
-    ctx.strokeStyle = '#04100d';
+    ctx.globalAlpha = fade * S().outA;
+    ctx.strokeStyle = S().outline;
     ctx.lineWidth = 1 * sz;
     ctx.stroke(body);
 
@@ -517,15 +543,21 @@ function frame(now) {
 
   drawBackground(T);
   drawCaustics(T);
-  drawMotes(T, dt);
+  if (theme === 'dark') drawMotes(T, dt);
   for (const f of fishes) f.draw(T);
   drawPads(T);
 
-  rippleAcc += dt * (4 + 22 * I) * (reduced ? 0.35 : 1);
-  while (rippleAcc > 1) { rippleAcc -= 1; addRipple(rand(0, W), rand(0, H)); }
-  drawRipples(dt);
-  if (CONFIG.showStreaks && !reduced)
-    drawStreaks(dt, Math.floor(lerp(18, 90, clamp(I, 0, 1))));
+  if (theme === 'dark') {
+    rippleAcc += dt * (4 + 22 * I) * (reduced ? 0.35 : 1);
+    while (rippleAcc > 1) { rippleAcc -= 1; addRipple(rand(0, W), rand(0, H)); }
+    drawRipples(dt);
+    if (CONFIG.showStreaks && !reduced)
+      drawStreaks(dt, Math.floor(lerp(18, 90, clamp(I, 0, 1))));
+  } else {
+    rippleAcc += dt * 1.4 * (reduced ? 0.35 : 1);   // a calm day
+    while (rippleAcc > 1) { rippleAcc -= 1; addRipple(rand(0, W), rand(0, H), rand(30, 80), 0.32); }
+    drawRipples(dt);
+  }
 
   rafId = requestAnimationFrame(frame);
 }
@@ -697,12 +729,30 @@ function plip() { // a single soft droplet
   s.start(t0, rand(0, 1.5), 0.12);
 }
 
-rainBtn.addEventListener('click', () => {
-  if (!actx) makeAudio();
-  rainOn = !rainOn;
-  if (rainOn) actx.resume(); else actx.suspend();
+function toggleRain(on) {
+  rainOn = on;
+  if (actx) { if (rainOn) actx.resume(); else actx.suspend(); }
   rainBtn.textContent = rainOn ? '♪ rain on' : '♪ rain off';
   rainBtn.setAttribute('aria-pressed', String(rainOn));
+}
+rainBtn.addEventListener('click', () => {
+  if (!actx) makeAudio();
+  toggleRain(!rainOn);
 });
+
+/* ── day / night ──────────────────────────────────────────── */
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.dataset.theme = t;
+  themeBtn.textContent = t === 'dark' ? '\u2600 day' : '\u263e night';
+  themeBtn.setAttribute('aria-pressed', String(t === 'light'));
+  if (t === 'light' && rainOn) toggleRain(false);
+  try { localStorage.setItem('pond-theme', t); } catch (e) { /* preview sandboxes */ }
+}
+themeBtn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
+let savedTheme = null;
+try { savedTheme = localStorage.getItem('pond-theme'); } catch (e) {}
+if (savedTheme === 'light') applyTheme('light');
 
 })();

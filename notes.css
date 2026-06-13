@@ -114,9 +114,10 @@ h1{
 .toplinks a:hover{ color:var(--hot); text-decoration:underline }
 .tbtn{
   font:inherit; font-size:13px; color:var(--soft); white-space:nowrap;
-  background:none; border:none; padding:0; cursor:pointer;
+  background:none; border:none; padding:0 2px; cursor:pointer;
 }
 .tbtn:hover{ color:var(--hot); text-decoration:underline }
+.tbtn[aria-pressed="true"]{ color:var(--accent) }
 html[data-theme="light"] #rainBtn{ display:none }
 
 /* ── the index of entries ───────────────────────────────── */
@@ -181,3 +182,5 @@ footer{
   footer{ padding:40px 24px 30px }
   h1{ font-size:32px }
 }
+
+.post h1{ margin:0 0 4px; font-size:21px; font-weight:600; color:var(--head) }
