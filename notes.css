@@ -118,7 +118,6 @@ h1{
 }
 .tbtn:hover{ color:var(--hot); text-decoration:underline }
 .tbtn[aria-pressed="true"]{ color:var(--accent) }
-html[data-theme="light"] #rainBtn{ display:none }
 
 /* ── the index of entries ───────────────────────────────── */
 .links{ display:grid; gap:8px; margin-top:34px }

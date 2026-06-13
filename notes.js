@@ -384,7 +384,6 @@ window.addEventListener('pointerdown', e => {
       f.fy += (dy / (dist || 1)) * k;
     }
   }
-  plip();
 });
 
 /* ── day / night toggle ───────────────────────────────────── */
@@ -394,65 +393,11 @@ function applyTheme(t) {
   document.documentElement.dataset.theme = t;
   themeBtn.textContent = t === 'dark' ? '☀ day' : '☾ night';
   themeBtn.setAttribute('aria-pressed', String(t === 'light'));
-  if (t === 'light' && rainOn) toggleRain(false);
   try { localStorage.setItem('pond-theme', t); } catch (e) { /* preview sandboxes */ }
 }
 themeBtn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
 let saved = null;
 try { saved = localStorage.getItem('pond-theme'); } catch (e) {}
 if (saved === 'light') applyTheme('light');
-
-/* ── rain audio (synthesized, night only) ─────────────────── */
-let actx = null, rainOn = false, noiseBuf = null;
-const rainBtn = document.getElementById('rainBtn');
-
-function makeAudio() {
-  actx = new (window.AudioContext || window.webkitAudioContext)();
-  const len = actx.sampleRate * 2;
-  noiseBuf = actx.createBuffer(1, len, actx.sampleRate);
-  const ch = noiseBuf.getChannelData(0);
-  for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
-
-  const src = actx.createBufferSource();
-  src.buffer = noiseBuf; src.loop = true;
-  const lp = actx.createBiquadFilter(); lp.type = 'lowpass';
-  lp.frequency.value = 720; lp.Q.value = 0.6;
-  const g1 = actx.createGain(); g1.gain.value = 0.06;
-  src.connect(lp).connect(g1).connect(actx.destination);
-
-  const src2 = actx.createBufferSource();
-  src2.buffer = noiseBuf; src2.loop = true;
-  const bp = actx.createBiquadFilter(); bp.type = 'bandpass';
-  bp.frequency.value = 2700; bp.Q.value = 0.8;
-  const g2 = actx.createGain(); g2.gain.value = 0.016;
-  src2.connect(bp).connect(g2).connect(actx.destination);
-
-  src.start(); src2.start();
-  setInterval(() => { if (rainOn && Math.random() < 0.4 && !document.hidden) plip(); }, 260);
-}
-
-function plip() {
-  if (!actx || !rainOn) return;
-  const s = actx.createBufferSource(); s.buffer = noiseBuf;
-  const f = actx.createBiquadFilter(); f.type = 'bandpass';
-  f.frequency.value = rand(700, 2300); f.Q.value = 9;
-  const g = actx.createGain();
-  const t0 = actx.currentTime;
-  g.gain.setValueAtTime(0.09, t0);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.1);
-  s.connect(f).connect(g).connect(actx.destination);
-  s.start(t0, rand(0, 1.5), 0.12);
-}
-
-function toggleRain(on) {
-  rainOn = on;
-  if (actx) { if (rainOn) actx.resume(); else actx.suspend(); }
-  rainBtn.textContent = rainOn ? '♪ rain on' : '♪ rain off';
-  rainBtn.setAttribute('aria-pressed', String(rainOn));
-}
-rainBtn.addEventListener('click', () => {
-  if (!actx) makeAudio();
-  toggleRain(!rainOn);
-});
 
 })();

@@ -260,7 +260,6 @@ footer .x{ color:var(--dim) }
 
 /* ── day-mode adjustments ───────────────────────────────── */
 html[data-theme="light"] body::after{ mix-blend-mode:multiply; opacity:.045 }
-html[data-theme="light"] #rainBtn{ display:none }
 html[data-theme="light"].deep #pond{ filter:blur(2.2px) saturate(1) brightness(1.01) }
 html[data-theme="light"]{ scrollbar-color:#cfc9b8 var(--bg) }
 html[data-theme="light"] ::-webkit-scrollbar-thumb{ background:#d8d2c2 }

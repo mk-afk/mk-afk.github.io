@@ -3,21 +3,23 @@
 <head>
 <!--
   ─────────────────────────────────────────────────────────────
-  notes · the quiet page (companion to index.html)
+  projects & ideas · an index of pages you'll make
+  (companion to index.html)
 
-  ADDING A POST (two small steps):
-    1. copy posts/hello-pond.html to posts/your-title.html
-       and write in it.
-    2. add one entry row to the index below — rows can also
-       point straight at external links (arxiv, pdf, colab).
+  ADDING AN ENTRY (two small steps):
+    1. copy posts/hello-pond.html to posts/your-idea.html
+       and write it.
+    2. add one row to the index below pointing at it. flip
+       [planned] to [live] and add a date once it exists.
+    A row can also point straight at an external link
+    (repo, demo, arXiv, Colab) instead of a posts/ page.
 
   THEME: dark (night pond) is the default. the ☀/☾ button
   switches to a paper day mode and remembers the choice.
 
-  the pond here is the calm version: ripples, lily pads,
-  drifting light, rain at night. the koi sleep — instead a
-  school of small fish runs the page (boids: separation,
-  alignment, cohesion). tap the water to scatter them.
+  the background is the calm pond: ripples, lily pads, drifting
+  light, and a school of small fish (boids: separation, alignment,
+  cohesion). tap the water to scatter them.
 
   files: blog.html + notes.css + notes.js + posts/*.html
   ─────────────────────────────────────────────────────────────
@@ -25,11 +27,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- EDIT: your name -->
-<title>notes — your name</title>
-<meta name="description" content="Irregular notes on ML, research, and small systems.">
+<title>projects &amp; ideas — your name</title>
+<meta name="description" content="An index of projects I'm building and ideas I'm exploring.">
 <meta name="theme-color" content="#0a1715">
-<meta property="og:title" content="notes — your name">
-<meta property="og:description" content="Irregular notes on ML, research, and small systems.">
+<meta property="og:title" content="projects & ideas — your name">
+<meta property="og:description" content="An index of projects I'm building and ideas I'm exploring.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
@@ -51,40 +53,56 @@
     <a class="navlink" href="index.html">home</a>
     <a class="navlink" href="index.html#projects">projects</a>
     <a class="navlink" href="index.html#papers">papers</a>
-    <a class="navlink active" href="blog.html" aria-current="page">notes</a>
+    <a class="navlink active" href="blog.html" aria-current="page">ideas</a>
     <a class="navlink" href="index.html#resume">resume</a>
     <a class="navlink" href="index.html#contact">contact</a>
   </div>
   <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
-  <button id="rainBtn" class="tbtn" aria-pressed="false" title="toggle rain sound">♪ rain off</button>
 </nav>
 
 <div class="page">
-  <h1>notes</h1>
+  <h1>projects &amp; ideas</h1>
   <!-- EDIT: one line on what this page is -->
-  <p class="bio">Irregular writing on ML, small systems, and this koi pond. Newest first, no schedule.</p>
+  <p class="bio">An index of things I'm building and things I'm thinking about. Each one gets its own page as it takes shape.</p>
   <!-- EDIT: your links -->
   <p class="toplinks">
     <a href="mailto:you@example.com">Email</a> |
     <a href="#">GitHub</a>
   </p>
 
-  <!-- EDIT: the index. one row per post — point at an inline
-       article below (#id) or at an external link (arxiv, pdf). -->
-  <nav class="links" aria-label="all notes">
-    <h3>notes + experiments</h3>
+  <!--
+    HOW THIS PAGE WORKS — it's an index of pages you'll make.
+    To add an entry:
+      1. copy posts/hello-pond.html to posts/your-idea.html and write it.
+      2. add a row below pointing at it. flip [planned] to [live]
+         and drop in the date once the page exists.
+    A row can also point straight at an external link (repo, demo,
+    arXiv, Colab) instead of a posts/ page.
+  -->
+  <nav class="links" aria-label="projects and ideas">
+    <h3>projects</h3>
     <a href="posts/hello-pond.html">
-      <span class="link-content">&gt; <strong>[meta]</strong> hello, pond</span>
-      <span class="link-date">Jun 12, 2026</span>
+      <span class="link-content">&gt; <strong>[live]</strong> the koi pond — how this site is drawn</span>
+      <span class="link-date">Jun 2026</span>
+    </a>
+    <a href="#">
+      <span class="link-content">&gt; <strong>[planned]</strong> project two — short description here</span>
+      <span class="link-date">soon</span>
+    </a>
+    <a href="#">
+      <span class="link-content">&gt; <strong>[planned]</strong> project three — short description here</span>
+      <span class="link-date">soon</span>
     </a>
 
-    <!-- to add a post: copy posts/hello-pond.html, write in it,
-         then add a row like this:
-    <a href="posts/my-new-post.html">
-      <span class="link-content">&gt; <strong>[tag]</strong> my new post</span>
-      <span class="link-date">Mon DD, YYYY</span>
+    <h3>ideas</h3>
+    <a href="#">
+      <span class="link-content">&gt; <strong>[idea]</strong> something I want to try — one line on why</span>
+      <span class="link-date"></span>
     </a>
-    -->
+    <a href="#">
+      <span class="link-content">&gt; <strong>[idea]</strong> another thread to pull on later</span>
+      <span class="link-date"></span>
+    </a>
 
     <h3>around the site</h3>
     <a href="index.html">
@@ -92,7 +110,7 @@
       <span class="link-date"></span>
     </a>
     <a href="index.html#projects">
-      <span class="link-content">&gt; projects</span>
+      <span class="link-content">&gt; featured projects</span>
       <span class="link-date"></span>
     </a>
     <a href="index.html#papers">
@@ -109,8 +127,7 @@
     </a>
   </nav>
 
-
-  <p class="note">// rss can come later. write three posts first.</p>
+  <p class="note">// a running list. it grows as I do.</p>
 </div>
 
 <footer>
