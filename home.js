@@ -613,7 +613,7 @@ const HERO_STEPS = [
   { c: 'cat focus.txt' },
   { o: 'deep learning · computer vision · ml systems<br>now exploring: representation learning, efficient training' },
   { c: 'ls' },
-  { o: '<a class="dir" href="#projects">projects/</a> <a class="dir" href="#papers">papers/</a> <a class="dir" href="blog.html">ideas/</a> <a class="file" href="#resume">resume.txt</a> <a class="exec" href="#contact">contact.sh*</a>' },
+  { o: '<a class="dir" href="#projects">projects/</a> <a class="dir" href="#papers">papers/</a> <a class="dir" href="ideas.html">ideas/</a> <a class="file" href="#resume">resume.txt</a> <a class="exec" href="#contact">contact.sh*</a>' },
 ];
 const PROMPT = '<span class="d">&gt;</span> ';
 const term = document.getElementById('heroTerm');
