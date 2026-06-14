@@ -372,7 +372,7 @@ document.addEventListener('visibilitychange', () => {
 
 /* ── tap the water ────────────────────────────────────────── */
 window.addEventListener('pointerdown', e => {
-  if (e.target.closest('a, button, input, textarea, select, .page, footer')) return;
+  if (e.target.closest('a, button, input, textarea, select, .site-header')) return;
   addRipple(e.clientX, e.clientY, 92, theme === 'dark' ? 0.7 : 0.4);
   addRipple(e.clientX, e.clientY, 56, theme === 'dark' ? 0.55 : 0.3, 0.09);
   for (const f of school) {

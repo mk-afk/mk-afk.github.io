@@ -42,97 +42,84 @@
 </head>
 <body>
 
-<div id="scene" aria-hidden="true">
-  <canvas id="pond"></canvas>
-</div>
-<div id="dim" aria-hidden="true"></div>
+<div id="app">
 
-<nav aria-label="site">
-  <a class="brand" href="index.html"><span class="h">~</span>/koipond</a>
-  <div class="navlinks">
-    <a class="navlink" href="index.html">home</a>
-    <a class="navlink" href="index.html#projects">projects</a>
-    <a class="navlink" href="index.html#papers">papers</a>
-    <a class="navlink active" href="ideas.html" aria-current="page">ideas</a>
-    <a class="navlink" href="index.html#resume">resume</a>
-    <a class="navlink" href="index.html#contact">contact</a>
+  <div id="scene" aria-hidden="true">
+    <canvas id="pond"></canvas>
   </div>
-  <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
-</nav>
+  <div id="dim" aria-hidden="true"></div>
 
-<div class="page">
-  <h1>projects &amp; ideas</h1>
-  <!-- EDIT: one line on what this page is -->
-  <p class="bio">An index of things I'm building and things I'm thinking about. Each one gets its own page as it takes shape.</p>
-  <!-- EDIT: your links -->
-  <p class="toplinks">
-    <a href="mailto:you@example.com">Email</a> |
-    <a href="#">GitHub</a>
-  </p>
+  <header class="site-header">
+    <!-- EDIT: page title + one-line intro -->
+    <h1>projects &amp; ideas</h1>
+    <p>An index of things I'm building and things I'm thinking about. Each one gets its own page as it takes shape. <a href="index.html">Back to the pond &#8617;</a></p>
 
-  <!--
-    HOW THIS PAGE WORKS — it's an index of pages you'll make.
-    To add an entry:
-      1. copy posts/hello-pond.html to posts/your-idea.html and write it.
-      2. add a row below pointing at it. flip [planned] to [live]
-         and drop in the date once the page exists.
-    A row can also point straight at an external link (repo, demo,
-    arXiv, Colab) instead of a posts/ page.
-  -->
-  <nav class="links" aria-label="projects and ideas">
-    <h3>projects</h3>
-    <a href="posts/hello-pond.html">
-      <span class="link-content">&gt; <strong>[live]</strong> the koi pond — how this site is drawn</span>
-      <span class="link-date">Jun 2026</span>
-    </a>
-    <a href="#">
-      <span class="link-content">&gt; <strong>[planned]</strong> project two — short description here</span>
-      <span class="link-date">soon</span>
-    </a>
-    <a href="#">
-      <span class="link-content">&gt; <strong>[planned]</strong> project three — short description here</span>
-      <span class="link-date">soon</span>
-    </a>
+    <!-- EDIT: your links. the toggle flips day / night and is remembered. -->
+    <p class="social-links">
+      <a href="index.html">Home</a> &nbsp;|&nbsp;
+      <a href="mailto:you@example.com">Email</a> &nbsp;|&nbsp;
+      <a href="#">GitHub</a> &nbsp;|&nbsp;
+      <button id="themeBtn" class="toggle" aria-pressed="false" title="toggle day / night">&#9728; day</button>
+    </p>
 
-    <h3>ideas</h3>
-    <a href="#">
-      <span class="link-content">&gt; <strong>[idea]</strong> something I want to try — one line on why</span>
-      <span class="link-date"></span>
-    </a>
-    <a href="#">
-      <span class="link-content">&gt; <strong>[idea]</strong> another thread to pull on later</span>
-      <span class="link-date"></span>
-    </a>
+    <!--
+      HOW THIS PAGE WORKS — an index of pages you'll make.
+      To add an entry: copy posts/hello-pond.html to posts/your-idea.html,
+      write it, then add a row below pointing at it (flip [planned] to [live]
+      and add a date). A row can also point at an external link (repo, arXiv, demo).
+    -->
+    <nav class="links" aria-label="index">
+      <h3>Projects</h3>
+      <a href="posts/hello-pond.html">
+        <span class="link-content">&gt; <strong>[live]</strong> The Koi Pond — how this site is drawn</span>
+        <span class="link-date">Jun 2026</span>
+      </a>
+      <a href="#">
+        <span class="link-content">&gt; <strong>[planned]</strong> Project Two — short description here</span>
+        <span class="link-date">soon</span>
+      </a>
+      <a href="#">
+        <span class="link-content">&gt; <strong>[planned]</strong> Project Three — short description here</span>
+        <span class="link-date">soon</span>
+      </a>
 
-    <h3>around the site</h3>
-    <a href="index.html">
-      <span class="link-content">&gt; home (the pond)</span>
-      <span class="link-date"></span>
-    </a>
-    <a href="index.html#projects">
-      <span class="link-content">&gt; featured projects</span>
-      <span class="link-date"></span>
-    </a>
-    <a href="index.html#papers">
-      <span class="link-content">&gt; papers</span>
-      <span class="link-date"></span>
-    </a>
-    <a href="index.html#resume">
-      <span class="link-content">&gt; resume</span>
-      <span class="link-date"></span>
-    </a>
-    <a href="index.html#contact">
-      <span class="link-content">&gt; contact</span>
-      <span class="link-date"></span>
-    </a>
-  </nav>
+      <h3>Ideas</h3>
+      <a href="#">
+        <span class="link-content">&gt; <strong>[idea]</strong> Something I want to try — one line on why</span>
+        <span class="link-date"></span>
+      </a>
+      <a href="#">
+        <span class="link-content">&gt; <strong>[idea]</strong> Another thread to pull on later</span>
+        <span class="link-date"></span>
+      </a>
 
-  <p class="note">// a running list. it grows as I do.</p>
+      <h3>Around the Site</h3>
+      <a href="index.html">
+        <span class="link-content">&gt; Home (the pond)</span>
+        <span class="link-date"></span>
+      </a>
+      <a href="index.html#projects">
+        <span class="link-content">&gt; Featured projects</span>
+        <span class="link-date"></span>
+      </a>
+      <a href="index.html#papers">
+        <span class="link-content">&gt; Papers</span>
+        <span class="link-date"></span>
+      </a>
+      <a href="index.html#resume">
+        <span class="link-content">&gt; Resume</span>
+        <span class="link-date"></span>
+      </a>
+      <a href="index.html#contact">
+        <span class="link-content">&gt; Contact</span>
+        <span class="link-date"></span>
+      </a>
+    </nav>
+
+    <p class="note">// a running list. it grows as I do.</p>
+  </header>
+
 </div>
-
-<footer>
-  · fin · &nbsp;© 2026 Your Name · <a href="index.html">back to the pond</a> <span style="opacity:.4">· layout v2</span>
-</footer>
 
 <script src="ideas.js"></script>
 </body>
