@@ -41,6 +41,9 @@ html{ scrollbar-color:#23433a var(--bg) }
 }
 body{
   margin:0;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
   background:var(--bg);
   color:var(--ink);
   font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
@@ -100,9 +103,13 @@ nav::-webkit-scrollbar{ display:none }
 /* ── page (the reference's chrome-free layout) ──────────── */
 .page{
   position:relative; z-index:30;
+  flex:1 0 auto;
+  width:100%;
   max-width:56rem;
-  padding:86px 56px 30px;
+  padding:86px 56px 40px;
+  overflow:hidden;            /* contain floats / children */
 }
+.page::after{ content:""; display:block; clear:both }
 h1{
   margin:0 0 10px;
   font-size:40px; font-weight:300; letter-spacing:.5px;
@@ -120,7 +127,7 @@ h1{
 .tbtn[aria-pressed="true"]{ color:var(--accent) }
 
 /* ── the index of entries ───────────────────────────────── */
-.links{ display:grid; gap:8px; margin-top:34px }
+.links{ display:flex; flex-direction:column; gap:8px; margin-top:34px }
 .links h3{
   margin:22px 0 8px; font-size:15px; font-weight:400;
   letter-spacing:.5px; color:var(--accent);
@@ -171,8 +178,12 @@ h1{
 
 footer{
   position:relative; z-index:30;
+  flex:0 0 auto;
+  clear:both;
+  width:100%;
   color:var(--soft); font-size:12.5px;
-  padding:50px 56px 36px; max-width:56rem;
+  padding:28px 56px 36px; max-width:56rem;
+  border-top:1px solid var(--rule);
 }
 
 @media (max-width:680px){
