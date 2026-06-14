@@ -372,7 +372,7 @@ document.addEventListener('visibilitychange', () => {
 
 /* ── tap the water ────────────────────────────────────────── */
 window.addEventListener('pointerdown', e => {
-  if (e.target.closest('a, button, input, textarea, select, .site-header')) return;
+  if (e.target.closest('a, button, input, textarea, select, nav, main')) return;
   addRipple(e.clientX, e.clientY, 92, theme === 'dark' ? 0.7 : 0.4);
   addRipple(e.clientX, e.clientY, 56, theme === 'dark' ? 0.55 : 0.3, 0.09);
   for (const f of school) {
@@ -387,17 +387,24 @@ window.addEventListener('pointerdown', e => {
 });
 
 /* ── day / night toggle ───────────────────────────────────── */
+const dimEl = document.getElementById('dim');
+function setDim() {
+  // steady veil for readability; home.css zeroes it out by default,
+  // and clears it entirely in day mode.
+  dimEl.style.opacity = (theme === 'light') ? '0' : '0.5';
+}
 const themeBtn = document.getElementById('themeBtn');
 function applyTheme(t) {
   theme = t;
   document.documentElement.dataset.theme = t;
   themeBtn.textContent = t === 'dark' ? '☀ day' : '☾ night';
   themeBtn.setAttribute('aria-pressed', String(t === 'light'));
+  setDim();
   try { localStorage.setItem('pond-theme', t); } catch (e) { /* preview sandboxes */ }
 }
 themeBtn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
 let saved = null;
 try { saved = localStorage.getItem('pond-theme'); } catch (e) {}
-if (saved === 'light') applyTheme('light');
+if (saved === 'light') applyTheme('light'); else setDim();
 
 })();
