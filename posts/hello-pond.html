@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!--
+  A WRITE-UP. To make another: copy this file to posts/your-title.html,
+  change the <title>, the description, the <h1>, the date and the body,
+  then add an entry for it in ../ideas.html.
+  Every path starts with ../ because this file lives one folder down.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello, pond – Michael Kireeff</title>
+<meta name="description" content="How the koi on this site are drawn: a chain of 26 points and some geometry.">
+<link rel="canonical" href="https://mk-afk.github.io/posts/hello-pond.html">
+<meta name="theme-color" content="#081714">
+<meta name="robots" content="noai, noimageai">
+<meta name="tdm-reservation" content="1">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://mk-afk.github.io/posts/hello-pond.html">
+<meta property="og:title" content="Hello, pond">
+<meta property="og:description" content="How the koi on this site are drawn: a chain of 26 points and some geometry.">
+<meta property="og:image" content="https://mk-afk.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<!-- Night or Day, settled before anything is painted -->
+<script src="../theme.js"></script>
+<script>
+  /* fetch the first screen's two fonts early (browsers refuse this when the page is opened straight from a folder) */
+  if (location.protocol !== 'file:') for (const f of ['../fonts/lmweb-roman10-regular.woff2', '../fonts/lmweb-roman17-regular.woff2'])
+    document.head.insertAdjacentHTML('beforeend', '<link rel="preload" as="font" type="font/woff2" crossorigin href="' + f + '">');
+</script>
+<link rel="stylesheet" href="../home.css">
+<link rel="stylesheet" href="../ideas.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to the write-up</a>
+<canvas id="pond" aria-hidden="true"></canvas>
+
+<header class="site-head">
+  <a class="brand" href="../index.html">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g transform="translate(16 16) rotate(40)"><path fill="currentColor" opacity=".78" d="M.2 8.2C-.6 10.4-2.6 11.9-3.3 14.3-1.6 14.1-.2 13.3.8 12.1 1.9 13.5 3.6 14.4 5.6 14.5 4.9 12.2 2.4 10.5.2 8.2ZM-3.5-4.8C-6.3-4.9-8.3-2.9-8.4-.2-6.3-.6-4.7-1.7-3.8-3ZM3.5-4.8C6.3-4.9 8.3-2.9 8.4-.2 6.3-.6 4.7-1.7 3.8-3Z"/><path fill="currentColor" d="M0-11.6C3.3-10.4 4.7-5.6 4.1-.8 3.6 3 1.9 6.6.3 9.4-1.5 6.6-3.4 3-4-.8-4.7-5.6-3.3-10.4 0-11.6Z"/><ellipse cy="-6.5" rx="2.25" ry="2.5" fill="#d9502c"/></g></svg>
+    <span>Michael Kireeff</span>
+  </a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="../index.html">Resume</a>
+    <span class="sep" aria-hidden="true">|</span>
+    <a href="../ideas.html" aria-current="true">Ideas</a>
+  </nav>
+  <div class="theme-switch" role="group" aria-label="Pond lighting"><button type="button" data-set-theme="dark" aria-pressed="true">Night</button><span class="sep" aria-hidden="true">|</span><button type="button" data-set-theme="light" aria-pressed="false">Day</button></div>
+</header>
+
+<aside class="fig-caption" aria-label="About the pond"><span><span class="cap-line"><span id="pondNote"></span></span> <span class="cap-line"><button id="pondPause" class="linkish" type="button">Pause</button></span></span></aside>
+
+<main id="main" class="sheet">
+
+  <p class="back no-print"><a href="../ideas.html">← All ideas</a></p>
+
+  <article>
+    <header class="post-head">
+      <h1>Hello, pond</h1>
+      <p class="date"><time datetime="2026-06-12">June 12, 2026</time></p>
+    </header>
+
+    <div class="post-body">
+      <p>This site needed a reason to exist beyond holding a resume, so I gave it one: a pond. Everything swimming on the home page is procedural. No sprites, no video files, just a canvas and some geometry.</p>
+
+      <p>Each koi is a chain of 26 points. The head steers, and every point behind it follows the one ahead at a fixed distance. That constraint is nearly the whole skeleton, three lines:</p>
+
+<pre><code>const d = Math.hypot(dx, dy) || 1;
+cx[i] = cx[i-1] + (dx / d) * segLen;
+cy[i] = cy[i-1] + (dy / d) * segLen;</code></pre>
+
+      <p>One more rule keeps the fish honest: no joint may bend more than about fourteen degrees, so a koi can curl into a C but never fold back over itself.</p>
+
+      <p>A sine wave travels down the spine to make it swim, the body is an outline drawn at varying widths along those points, the fins are fans pinned to it, and depth is faked by tinting everything toward the water color. The markings are blots laid down at random, once per fish, so every visitor gets koi nobody else has seen.</p>
+
+      <figure>
+        <canvas id="skeleton" role="img" aria-label="A line drawing of one koi swimming across the figure, with the 26 points of its spine marked."></canvas>
+        <figcaption>Figure 1: One koi with its skeleton showing. The filled point is the head; each of the other 25 follows the one ahead.</figcaption>
+      </figure>
+
+      <p>I’ll write here occasionally about whatever I’m building or reading. No schedule. The fish don’t keep one either.</p>
+    </div>
+  </article>
+
+</main>
+
+<footer class="site-foot">
+  <p>© 2026 Michael Kireeff. <a href="../ideas.html">All ideas</a> <span aria-hidden="true">|</span> <a href="../index.html">Resume</a></p>
+</footer>
+
+<script src="../pond.js"></script>
+<script src="../water.js"></script>
+<script src="../afloat.js"></script>
+<script src="../ideas.js"></script>
+<script>
+/* Figure 1: one koi drawn as a diagram, built the same way as the fish on the home page */
+(() => {
+  'use strict';
+  const cv = document.getElementById('skeleton');
+  if (!cv || !cv.getContext) return;
+  const ctx = cv.getContext('2d');
+  const N = 26, SEG = 6.4, TAU = Math.PI * 2;
+  const cx = new Float32Array(N), cy = new Float32Array(N);       // the chain
+  const px = new Float32Array(N), py = new Float32Array(N);       // the chain with the swimming wave added
+  const nx = new Float32Array(N), ny = new Float32Array(N);
+  // half-width of the body at each point (the profile home.js uses)
+  const mix = (a, b, k) => a + (b - a) * k, ease = x => x * x * (3 - 2 * x);
+  const wide = Array.from({ length: N }, (_, i) => {
+    const t = i / (N - 1);
+    const f = t < 0.14 ? mix(0.55, 0.97, ease(t / 0.14)) : t < 0.4 ? mix(0.97, 1, ease((t - 0.14) / 0.26))
+            : t < 0.8 ? mix(1, 0.26, ease((t - 0.4) / 0.4)) : mix(0.26, 0.11, (t - 0.8) / 0.2);
+    return f * 18;
+  });
+  const FAN = new Path2D('M-.06-.09Q.5-.27 .98-.1Q1.13.17 .84.42Q.42.41 0 .17Z');   // a side fin, one unit long (as in home.js)
+  const SPEED = 44;
+  let W = 0, H = 0, lap = 0, x = 0, turn = 0, phase = 0;
+
+  // The head weaves slowly from left to right. The figure is a treadmill: one lap
+  // is a little wider than the canvas, and the fish is drawn twice, a lap apart,
+  // so its tail is still leaving on the right while its head comes in on the left.
+  const lane = at => H / 2 + Math.min(30, H * 0.19) * Math.sin(at / 74 + turn);
+  function step(dt) {
+    phase += dt * 3.2;
+    x += SPEED * dt;
+    if (x >= lap) {                           // start the next lap without a jump
+      x -= lap; turn += lap / 74;
+      for (let i = 0; i < N; i++) cx[i] -= lap;
+    }
+    cx[0] = x; cy[0] = lane(x);
+    for (let i = 1; i < N; i++) {             // the three lines from the text
+      const dx = cx[i] - cx[i - 1], dy = cy[i] - cy[i - 1];
+      const d = Math.hypot(dx, dy) || 1;
+      cx[i] = cx[i - 1] + (dx / d) * SEG;
+      cy[i] = cy[i - 1] + (dy / d) * SEG;
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    sketch();
+    ctx.save(); ctx.translate(lap, 0); sketch(); ctx.restore();   // the same fish, one lap ahead
+  }
+  function sketch() {
+    for (let i = 0; i < N; i++) {             // the sine wave travelling down the spine
+      const a = Math.max(0, i - 1), b = Math.min(N - 1, i + 1);
+      let fx = cx[a] - cx[b], fy = cy[a] - cy[b];
+      const L = Math.hypot(fx, fy) || 1; fx /= L; fy /= L;
+      const sway = Math.sin(phase - i * 0.52) * 3.4 * (0.12 + 0.88 * Math.pow(i / (N - 1), 1.5));
+      px[i] = cx[i] - fy * sway; py[i] = cy[i] + fx * sway;
+    }
+    for (let i = 0; i < N; i++) {
+      const a = Math.max(0, i - 1), b = Math.min(N - 1, i + 1);
+      let fx = px[a] - px[b], fy = py[a] - py[b];
+      const L = Math.hypot(fx, fy) || 1;
+      nx[i] = -fy / L; ny[i] = fx / L;
+    }
+    ctx.lineJoin = ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000'; ctx.fillStyle = '#fff';
+    const facing = i => Math.atan2(-nx[i], ny[i]);          // which way the body points at point i
+    // tail fin: two lobes, their tips a beat behind the stalk
+    const e = N - 1, tl = 37, open = 0.4, ph = phase - N * 0.52;
+    const s0 = 0.36 * Math.sin(ph - 0.5), s1 = 0.36 * Math.sin(ph - 0.95), s2 = 0.36 * Math.sin(ph - 1.4);
+    ctx.save();
+    ctx.translate(px[e], py[e]); ctx.rotate(facing(e) + Math.PI); ctx.scale(tl, tl);
+    ctx.lineWidth = 1 / tl;
+    ctx.beginPath();
+    ctx.moveTo(-0.1, 0.055);
+    ctx.quadraticCurveTo(0.52 * Math.cos(open + 0.44 + s0), 0.52 * Math.sin(open + 0.44 + s0), Math.cos(open + s2), Math.sin(open + s2));
+    ctx.quadraticCurveTo(0.8 * Math.cos(open - 0.1 + s1), 0.8 * Math.sin(open - 0.1 + s1), 0.6 * Math.cos(s1), 0.6 * Math.sin(s1));
+    ctx.quadraticCurveTo(0.8 * Math.cos(-open + 0.1 + s1), 0.8 * Math.sin(-open + 0.1 + s1), Math.cos(-open + s2), Math.sin(-open + s2));
+    ctx.quadraticCurveTo(0.52 * Math.cos(-open - 0.44 + s0), 0.52 * Math.sin(-open - 0.44 + s0), -0.1, -0.055);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+    // side fins: the same fan four times, pinned to the 13th point and the 6th
+    for (const side of [1, -1]) {
+      for (const [i, inset, spread, long] of [[12, 0.5, 0.5, 16], [5, 0.7, 0.85 + 0.07 * Math.sin(phase * 1.1 + side), 29]]) {
+        ctx.save();
+        ctx.translate(px[i] + nx[i] * wide[i] * inset * side, py[i] + ny[i] * wide[i] * inset * side);
+        ctx.rotate(facing(i) + Math.PI - side * spread);
+        ctx.scale(long, long * side);
+        ctx.lineWidth = 1 / long;
+        ctx.fill(FAN); ctx.stroke(FAN);
+        ctx.restore();
+      }
+    }
+    ctx.lineWidth = 1;
+    // body outline: one smooth curve through the points pushed out to each side
+    const hx = px[0] - px[1], hy = py[0] - py[1], hl = Math.hypot(hx, hy) || 1;
+    const pts = [[px[0] + hx / hl * 8, py[0] + hy / hl * 8]];
+    for (let i = 0; i < N; i++) pts.push([px[i] + nx[i] * wide[i], py[i] + ny[i] * wide[i]]);
+    for (let i = N - 1; i >= 0; i--) pts.push([px[i] - nx[i] * wide[i], py[i] - ny[i] * wide[i]]);
+    ctx.beginPath();
+    const n = pts.length;
+    ctx.moveTo((pts[0][0] + pts[n - 1][0]) / 2, (pts[0][1] + pts[n - 1][1]) / 2);
+    for (let i = 0; i < n; i++) {
+      const a = pts[i], b = pts[(i + 1) % n];
+      ctx.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
+    }
+    ctx.closePath();
+    ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
+    // the widths: a rib across the body at every point
+    ctx.lineWidth = 0.5; ctx.strokeStyle = 'rgba(0,0,0,.38)';
+    ctx.beginPath();
+    for (let i = 1; i < N - 1; i++) {
+      ctx.moveTo(px[i] + nx[i] * wide[i], py[i] + ny[i] * wide[i]);
+      ctx.lineTo(px[i] - nx[i] * wide[i], py[i] - ny[i] * wide[i]);
+    }
+    ctx.stroke();
+    // the chain itself
+    ctx.lineWidth = 0.8; ctx.strokeStyle = '#000';
+    ctx.beginPath(); ctx.moveTo(px[0], py[0]);
+    for (let i = 1; i < N; i++) ctx.lineTo(px[i], py[i]);
+    ctx.stroke();
+    for (let i = N - 1; i >= 0; i--) {
+      ctx.beginPath(); ctx.arc(px[i], py[i], i ? 1.9 : 3, 0, TAU);
+      ctx.fillStyle = i ? '#fff' : '#000'; ctx.fill();
+      ctx.lineWidth = 0.9; ctx.stroke();
+    }
+  }
+  function fit() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || (w === W && h === H)) return;
+    const first = !W;
+    W = w; H = h; lap = W + 40;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (first) x = W * 0.55;                  // first frame: already half way across
+    x = Math.min(x, lap - 1);
+    for (let i = 0; i < N; i++) { cx[i] = x - i * SEG; cy[i] = lane(cx[i]); }   // body laid out behind the head…
+    for (let i = 0; i < 90; i++) step(1 / 60);                                   // …then left to settle
+    draw();
+  }
+
+  // run only while the figure is on screen and nothing has asked for stillness
+  let onScreen = false, raf = 0, last = 0;
+  let paused = window.Pond ? window.Pond.paused : matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(now) {
+    raf = 0;
+    if (!onScreen || paused || document.hidden) return;
+    step(Math.min(0.05, (now - last) / 1000)); last = now;
+    draw();
+    raf = requestAnimationFrame(frame);
+  }
+  function kick() { if (!raf && onScreen && !paused && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  if (window.Pond) window.Pond.onPause(p => { paused = p; kick(); });
+  document.addEventListener('visibilitychange', kick);
+  window.addEventListener('resize', fit);
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; kick(); }).observe(cv);
+  else onScreen = true;
+  fit();
+  kick();
+})();
+</script>
+</body>
+</html>

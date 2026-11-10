@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!-- GitHub Pages shows this for any address that doesn't exist.
+     It can be served from any folder depth, so every path here starts with "/". -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found – Michael Kireeff</title>
+<meta name="theme-color" content="#081714">
+<meta name="robots" content="noindex, noai, noimageai">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<!-- Night or Day, settled before anything is painted -->
+<script src="/theme.js"></script>
+<script>
+  /* fetch the first screen's two fonts early (browsers refuse this when the page is opened straight from a folder) */
+  if (location.protocol !== 'file:') for (const f of ['/fonts/lmweb-roman10-regular.woff2', '/fonts/lmweb-roman12-bold.woff2'])
+    document.head.insertAdjacentHTML('beforeend', '<link rel="preload" as="font" type="font/woff2" crossorigin href="' + f + '">');
+</script>
+<link rel="stylesheet" href="/home.css">
+<link rel="stylesheet" href="/ideas.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to the message</a>
+<canvas id="pond" aria-hidden="true"></canvas>
+
+<header class="site-head">
+  <a class="brand" href="/">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g transform="translate(16 16) rotate(40)"><path fill="currentColor" opacity=".78" d="M.2 8.2C-.6 10.4-2.6 11.9-3.3 14.3-1.6 14.1-.2 13.3.8 12.1 1.9 13.5 3.6 14.4 5.6 14.5 4.9 12.2 2.4 10.5.2 8.2ZM-3.5-4.8C-6.3-4.9-8.3-2.9-8.4-.2-6.3-.6-4.7-1.7-3.8-3ZM3.5-4.8C6.3-4.9 8.3-2.9 8.4-.2 6.3-.6 4.7-1.7 3.8-3Z"/><path fill="currentColor" d="M0-11.6C3.3-10.4 4.7-5.6 4.1-.8 3.6 3 1.9 6.6.3 9.4-1.5 6.6-3.4 3-4-.8-4.7-5.6-3.3-10.4 0-11.6Z"/><ellipse cy="-6.5" rx="2.25" ry="2.5" fill="#d9502c"/></g></svg>
+    <span>Michael Kireeff</span>
+  </a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="/">Resume</a>
+    <span class="sep" aria-hidden="true">|</span>
+    <a href="/ideas.html">Ideas</a>
+  </nav>
+  <div class="theme-switch" role="group" aria-label="Pond lighting"><button type="button" data-set-theme="dark" aria-pressed="true">Night</button><span class="sep" aria-hidden="true">|</span><button type="button" data-set-theme="light" aria-pressed="false">Day</button></div>
+</header>
+
+<aside class="fig-caption" aria-label="About the pond"><span><span class="cap-line">Figure 1: Nothing here but fish.</span> <span class="cap-line"><span id="pondNote"></span> <button id="pondPause" class="linkish" type="button">Pause</button></span></span></aside>
+
+<main id="main" class="sheet">
+  <header class="masthead">
+    <h1>Page not found</h1>
+    <p class="sub">There is nothing at this address. Try the <a href="/">resume</a> or the <a href="/ideas.html">list of ideas</a>.</p>
+  </header>
+</main>
+
+<script src="/pond.js"></script>
+<script src="/water.js"></script>
+<script src="/afloat.js"></script>
+<script src="/ideas.js"></script>
+</body>
+</html>

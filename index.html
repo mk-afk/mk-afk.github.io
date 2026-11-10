@@ -3,209 +3,304 @@
 <head>
 <!--
   ─────────────────────────────────────────────────────────────
-  koi pond portfolio · single-file site (HTML + CSS + JS)
+  Michael Kireeff: a resume on a koi pond
 
-  EDIT MAP — search for the word "EDIT" to find every spot:
-    1. <title> + meta description (just below)
-    2. Hero terminal text  → HERO_STEPS array near the top of home.js
-       (also mirrored in the <noscript> block for no-JS visitors)
-    3. Projects            → duplicate any <article class="card panel">
-    4. Papers              → the .paper block
-    5. Resume              → the #resume panel + drop a resume.pdf
-       next to this file so the download button works
-    6. Contact             → the #contact links
-    7. Ideas index         → ideas.html (an index of posts/ pages)
-    8. Pond settings       → CONFIG at the top of home.js
-       (fish count 2–4, rain amount, etc.)
+  The page is the resume, set like the LaTeX PDF, on a sheet of
+  paper lying on a pond. Plain HTML, CSS and JS; no build step.
 
-  FILES:  home   → index.html + home.css + home.js
-          ideas  → ideas.html + ideas.css + ideas.js
+  EDIT MAP (search this file for "EDIT"):
+    1. <title>, description and link-preview tags   just below
+    2. Name and contact line                         .masthead
+    3. Two-sentence intro                            .lede
+    4. Education / Experience / Skills               one .entry block per item; copy a block to add one
+    5. Publications                                  #publications
+    6. PDF download link                             put resume.pdf next to this file, then
+                                                     un-comment the marked line in .masthead
+    7. Pond settings                                 CONFIG at the top of pond.js (rain), home.js
+                                                     (number of koi, Day's ink trails), afloat.js
+                                                     (season, moon, fireflies), water.js (rings that
+                                                     bend the water, ink that flows) and theme.js
+                                                     (whether the page opens on Night or Day)
 
-  DEPLOY: push all six files together to a GitHub repo,
-  then Settings → Pages → deploy from branch. Done.
+  FILES
+    index.html             this page                 home.css  home.js
+    ideas.html             index of write-ups        ideas.css ideas.js
+    posts/*.html           the write-ups
+    pond.js                the water (shared by every page)
+    water.js               WebGL extras, where the device can run them: rings bend
+                           the water, the koi's ink flows (every page; optional)
+    afloat.js              the moon and the season's weather (every page)
+    theme.js               opens the page on Night or Day, by the visitor's clock
+    fonts/                 Latin Modern, the LaTeX typeface
+    robots.txt             asks AI and data-scraping crawlers to stay out
+    404.html               shown for any address that does not exist
+    hello-pond.html        forwards the write-up's old address to posts/
+    og.png                 the picture link previews show
+    favicon.svg, apple-touch-icon.png
+
+  DEPLOY: push everything to the mk-afk.github.io repo (keep the
+  folders), then Settings → Pages → deploy from branch.
   ─────────────────────────────────────────────────────────────
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- EDIT: your name + a one-line description -->
-<title>your name — ml research &amp; engineering</title>
-<meta name="description" content="Portfolio of an ML engineer & researcher — projects, papers, resume.">
-<meta name="theme-color" content="#0a1715">
-<meta property="og:title" content="your name — ml research & engineering">
-<meta property="og:description" content="Projects, papers, and a very calm koi pond.">
+<!-- EDIT: page title and the one-line description search engines show -->
+<title>Michael Kireeff – Electrical &amp; Computer Engineering, Carnegie Mellon</title>
+<meta name="description" content="Michael Kireeff studies electrical and computer engineering at Carnegie Mellon, with a minor in machine learning. Experience, publications and skills.">
+<link rel="canonical" href="https://mk-afk.github.io/">
+<meta name="theme-color" content="#081714">
+<!-- opt out of AI training and text-and-data mining (see robots.txt) -->
+<meta name="robots" content="noai, noimageai">
+<meta name="tdm-reservation" content="1">
+<!-- link previews -->
 <meta property="og:type" content="website">
-<!-- EDIT: set to your live URL; for rich link previews also add an og:image
-     (a 1200x630 screenshot of the pond works beautifully) -->
-<meta property="og:url" content="https://yourhandle.github.io/">
-<meta name="twitter:card" content="summary">
-<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<meta property="og:url" content="https://mk-afk.github.io/">
+<meta property="og:title" content="Michael Kireeff">
+<meta property="og:description" content="Electrical and computer engineering at Carnegie Mellon, with a minor in machine learning. Also, a koi pond.">
+<meta property="og:image" content="https://mk-afk.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Night or Day, settled before anything is painted -->
+<script src="theme.js"></script>
+<script>
+  /* fetch the first screen's two fonts early (browsers refuse this when the page is opened straight from a folder) */
+  if (location.protocol !== 'file:') for (const f of ['fonts/lmweb-roman10-regular.woff2', 'fonts/lmweb-roman12-bold.woff2'])
+    document.head.insertAdjacentHTML('beforeend', '<link rel="preload" as="font" type="font/woff2" crossorigin href="' + f + '">');
+</script>
 <link rel="stylesheet" href="home.css">
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to the resume</a>
 <canvas id="pond" aria-hidden="true"></canvas>
-<div id="dim" aria-hidden="true"></div>
 
-<nav aria-label="site">
-  <a class="brand" href="#home"><span class="h">~</span>/koipond</a>
-  <div class="navlinks">
-    <a class="navlink active" href="#home">home</a>
-    <a class="navlink" href="#projects">projects</a>
-    <a class="navlink" href="#papers">papers</a>
-    <a class="navlink" href="ideas.html">ideas</a>
-    <a class="navlink" href="#resume">resume</a>
-    <a class="navlink" href="#contact">contact</a>
-  </div>
-  <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">☀ day</button>
-</nav>
+<header class="site-head">
+  <a class="brand brand--mark" href="index.html" aria-label="Michael Kireeff, home">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g transform="translate(16 16) rotate(40)"><path fill="currentColor" opacity=".78" d="M.2 8.2C-.6 10.4-2.6 11.9-3.3 14.3-1.6 14.1-.2 13.3.8 12.1 1.9 13.5 3.6 14.4 5.6 14.5 4.9 12.2 2.4 10.5.2 8.2ZM-3.5-4.8C-6.3-4.9-8.3-2.9-8.4-.2-6.3-.6-4.7-1.7-3.8-3ZM3.5-4.8C6.3-4.9 8.3-2.9 8.4-.2 6.3-.6 4.7-1.7 3.8-3Z"/><path fill="currentColor" d="M0-11.6C3.3-10.4 4.7-5.6 4.1-.8 3.6 3 1.9 6.6.3 9.4-1.5 6.6-3.4 3-4-.8-4.7-5.6-3.3-10.4 0-11.6Z"/><ellipse cy="-6.5" rx="2.25" ry="2.5" fill="#d9502c"/></g></svg>
+    <span>Michael Kireeff</span>
+  </a>
+  <nav class="site-nav" aria-label="Site">
+    <a class="roomy" href="#education">Education</a>
+    <a href="#experience">Experience</a>
+    <a href="#publications">Publications</a>
+    <a class="roomy" href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+    <span class="sep" aria-hidden="true">|</span>
+    <a href="ideas.html">Ideas</a>
+  </nav>
+  <div class="theme-switch" role="group" aria-label="Pond lighting"><button type="button" data-set-theme="dark" aria-pressed="true">Night</button><span class="sep" aria-hidden="true">|</span><button type="button" data-set-theme="light" aria-pressed="false">Day</button></div>
+</header>
 
-<main>
+<aside class="fig-caption" aria-label="About the pond"><span><span class="cap-line">Figure 1: Koi, drawn live in your browser.</span> <span class="cap-line"><span id="pondNote"></span> <button id="pondPause" class="linkish" type="button">Pause</button></span></span></aside>
 
-  <!-- ════════ HOME ════════ -->
-  <section id="home" class="hero">
-    <div class="hero-card">
-      <div class="hero-id">
-        <!-- EDIT (optional): drop a square me.jpg next to index.html —
-             this image removes itself if the file is missing -->
-        <img class="avatar" src="me.jpg" alt="" width="84" height="84" onerror="this.remove()">
-        <div>
-          <!-- EDIT: your name + one-line role — the first thing visitors read -->
-          <h1 class="hero-name">Your Name</h1>
-          <p class="hero-tag">ML engineer &amp; aspiring researcher</p>
-        </div>
+<main id="main" class="sheet">
+
+  <!-- EDIT: name and contact line -->
+  <header class="masthead">
+    <h1>Michael Kireeff</h1>
+    <p class="contact-line">
+      <span>Pittsburgh, PA</span>
+      <span class="sep" aria-hidden="true">|</span>
+      <!-- EDIT: to change the address, see the note above the script at the bottom of this file -->
+      <a class="mail" href="#contact" data-u="ffeerikm" data-h="moc.liamg">email</a>
+      <span class="sep" aria-hidden="true">|</span>
+      <a href="https://github.com/mk-afk" rel="me">github.com/mk-afk</a>
+      <!-- EDIT: to offer a PDF download, put resume.pdf next to this file, then un-comment the
+           line below (take away the comment marks at its start and at its end).
+           Anything in that PDF, phone number included, becomes public. -->
+      <!-- <span class="slot no-print"><span class="sep" aria-hidden="true">|</span><a href="resume.pdf">Resume (PDF)</a></span> -->
+    </p>
+  </header>
+
+  <!-- EDIT: the short version, in your own words -->
+  <p class="lede">I study electrical and computer engineering at Carnegie Mellon, with a minor in machine learning. I have been a teaching assistant for three CMU courses (deep learning, machine learning and introductory programming), spent the summer of 2026 at Nivi Labs building a model pipeline for document identification, and wrote a first-author paper on a voltage regulator I designed for the <span class="nb">88-Inch</span> Cyclotron at Lawrence Berkeley National Laboratory.</p>
+
+  <section id="education" aria-labelledby="h-education">
+    <h2 id="h-education">Education</h2>
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Carnegie Mellon University</h3>
+        <p class="e-side">Pittsburgh, PA</p>
+        <p class="e-sub">B.S. in Electrical and Computer Engineering, Minor in Machine Learning (Completed)</p>
+        <p class="e-subside">Expected May 2027</p>
       </div>
-      <div class="term" id="heroTerm">
-        <noscript>
-          <!-- EDIT: static fallback shown if JS is off — keep in sync with HERO_STEPS -->
-          <div class="prompt-line"><span class="d">&gt;</span> cat focus.txt</div>
-          <div class="out">deep learning · computer vision · ml systems<br>now exploring: representation learning, efficient training</div>
-          <div class="prompt-line"><span class="d">&gt;</span> ls</div>
-          <div class="out"><a class="dir" href="#projects">projects/</a> <a class="dir" href="#papers">papers/</a> <a class="dir" href="ideas.html">ideas/</a> <a class="file" href="#resume">resume.txt</a> <a class="exec" href="#contact">contact.sh*</a></div>
-        </noscript>
-      </div>
-      <div class="hero-cta">
-        <a class="btn" href="#projects">↓ see projects</a>
-        <a class="btn" href="#contact">→ say hi</a>
-      </div>
-    </div>
-    <div class="hero-hint">// the pond is live — tap the water</div>
+      <ul>
+        <li><strong>Relevant Coursework:</strong> Introduction to Machine Learning <span class="nb">(10-301)</span>, Introduction to Deep Learning <span class="nb">(11-485)</span>, Deep Reinforcement Learning <span class="nb">(10-403)</span>, Probabilistic Graphical Models <span class="nb">(10-708)</span>, Deep Learning Systems <span class="nb">(10-414)</span></li>
+      </ul>
+    </article>
   </section>
 
-  <!-- ════════ PROJECTS ════════ -->
-  <section id="projects" class="sec">
-    <header class="sec-head">
-      <h2><span class="tilde">~/</span>projects</h2>
-      <p class="sub">selected builds, with code and demos</p>
-    </header>
-    <div class="grid">
+  <section id="experience" aria-labelledby="h-experience">
+    <h2 id="h-experience">Experience</h2>
 
-      <!-- EDIT: one card per project — duplicate this whole <article> block.
-           Swap the title, description, tags, and the two links. -->
-      <article class="card panel">
-        <div class="panel-body">
-          <h3>Attention Atlas</h3>
-          <p>Interactive maps of transformer attention heads across layers — what each head looks at, and when it stops mattering.</p>
-          <div class="tags"><span>pytorch</span><span>interpretability</span><span>d3</span></div>
-          <div class="links"><a href="#" >↗ code</a><a href="#">↗ demo</a></div>
-        </div>
-      </article>
+    <!-- EDIT: one <article class="entry"> per role. Copy a whole block to add one. -->
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Intern</h3>
+        <p class="e-side">May 2026 – Aug. 2026</p>
+        <p class="e-sub">Nivi Labs</p>
+        <p class="e-subside">Remote</p>
+      </div>
+      <ul>
+        <li>Built a model pipeline for document identification that outperformed a leading commercial LLM on cost and speed.</li>
+      </ul>
+    </article>
 
-      <article class="card panel">
-        <div class="panel-body">
-          <h3>Tiny Diffusion</h3>
-          <p>A readable, &lt;500-line diffusion model trained from scratch — built to understand every term in the loss.</p>
-          <div class="tags"><span>pytorch</span><span>generative</span><span>from-scratch</span></div>
-          <div class="links"><a href="#">↗ code</a><a href="#">↗ writeup</a></div>
-        </div>
-      </article>
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Teaching Assistant, Introduction to Deep Learning <span class="nb">(11-785)</span></h3>
+        <p class="e-side">Nov. 2024 – Jan. 2026</p>
+        <p class="e-sub">Carnegie Mellon School of Computer Science</p>
+        <p class="e-subside">Pittsburgh, PA</p>
+      </div>
+      <ul>
+        <li>Rewrote and refactored the “Language Modeling using Causal Transformer Decoder” and “Attention-based End-to-End Speech-to-Text Deep Neural Network” homework assignments to reduce student confusion.</li>
+        <li>Created ablations to set grade distribution cutoffs for the speech-to-text assignment.</li>
+        <li>Taught LLM and CNN boot camps, held weekly office hours, and managed Piazza questions.</li>
+      </ul>
+    </article>
 
-      <article class="card panel">
-        <div class="panel-body">
-          <h3>Pond Sim</h3>
-          <p>Agent-based ecosystem with RL-trained fish. The koi swimming on this page borrowed their gait from it.</p>
-          <div class="tags"><span>rl</span><span>simulation</span><span>canvas</span></div>
-          <div class="links"><a href="#">↗ code</a><a href="#">↗ demo</a></div>
-        </div>
-      </article>
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Teaching Assistant, Introduction to Machine Learning <span class="nb">(10-301)</span></h3>
+        <p class="e-side">May 2025 – Jun. 2025</p>
+        <p class="e-sub">Carnegie Mellon School of Computer Science</p>
+        <p class="e-subside">Pittsburgh, PA</p>
+      </div>
+      <ul>
+        <li>Supported the six-week summer course as one of four TAs (8 programming assignments, 4 quizzes, 2 exams).</li>
+        <li>Graded coursework and gave students tailored feedback on machine learning concepts.</li>
+        <li>Held office hours on topics from decision trees and neural networks to transformers and reinforcement learning.</li>
+      </ul>
+    </article>
 
-    </div>
-    <p class="note"># placeholder projects — replace with your own; duplicate a card to add more</p>
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Teaching Assistant, Fundamentals of Programming <span class="nb">(15-112)</span></h3>
+        <p class="e-side">Aug. 2024 – Dec. 2024</p>
+        <p class="e-sub">Carnegie Mellon School of Computer Science</p>
+        <p class="e-subside">Pittsburgh, PA</p>
+      </div>
+      <ul>
+        <li>Held weekly recitations and office hours, managed Piazza questions, and graded assignments for over 500 students.</li>
+        <li>Mentored students on projects using complex algorithms such as Dijkstra’s, Minimax, and procedural generation.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Student Assistant Intern</h3>
+        <p class="e-side">Jun. 2022 – Aug. 2022</p>
+        <p class="e-sub">Lawrence Berkeley National Laboratory</p>
+        <p class="e-subside">Berkeley, CA</p>
+      </div>
+      <ul>
+        <li>Wrote a program to benchmark ion beam spatial characteristics for consistent beam delivery and experiments.</li>
+        <li>Migrated the program from an outdated machine to a modern computer by integrating mainstream libraries.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Student Assistant Intern</h3>
+        <p class="e-side">Jun. 2021 – Aug. 2021</p>
+        <p class="e-sub">Lawrence Berkeley National Laboratory</p>
+        <p class="e-subside">Berkeley, CA</p>
+      </div>
+      <ul>
+        <li>Designed, built, and prototyped a new broadband Dee voltage regulator for the <span class="nb">88-Inch</span> Cyclotron to replace an obsolete unit that was hard to troubleshoot and repair and suffered from distortion and instability.</li>
+        <li>Used off-the-shelf components to detect and disable RF during sparking events, protecting the RF driver system, simplifying troubleshooting, and improving cyclotron tuning and operating consistency.</li>
+        <li>Presented a poster and published a first-author paper at the North American Particle Accelerator Conference.</li>
+      </ul>
+    </article>
   </section>
 
-  <!-- ════════ PAPERS ════════ -->
-  <section id="papers" class="sec">
-    <header class="sec-head">
-      <h2><span class="tilde">~/</span>papers</h2>
-      <p class="sub">publications, as they land</p>
-    </header>
-    <div class="panel">
-      <div class="panel-body">
-        <!-- EDIT: real papers go here, one .paper block each -->
-        <div class="paper">
-          <span class="idx">[1]</span> <span class="ptitle">“Title of Your First Paper Goes Here”</span>
-          <div class="pmeta">Y. Name, A. Coauthor, B. Coauthor — <em>Venue</em>, 20XX</div>
-          <div class="plinks"><a href="#">[pdf]</a><a href="#">[arXiv]</a><a href="#">[bibtex]</a></div>
-        </div>
-        <p class="note"># status: research in progress — this shelf fills up soon</p>
-      </div>
+  <section id="publications" aria-labelledby="h-publications">
+    <h2 id="h-publications">Publications</h2>
+    <!-- EDIT: one <p class="plain"> per paper -->
+    <p class="plain"><strong>M. Kireeff</strong>, P. Bloemhard, T. Hassan, and L. Phair, “Dee Voltage Regulator for the <span class="nb">88-Inch</span> Cyclotron,” in <em>Proc. 5th North American Particle Accelerator Conf. (NAPAC’22)</em>, Albuquerque, NM, USA, Aug. 2022, pp. 147–150, doi:<a href="https://doi.org/10.18429/JACoW-NAPAC2022-MOPA43">10.18429/JACoW-NAPAC2022-MOPA43</a>.</p>
+    <p class="plain cite-links no-print">
+      <a href="https://jacow.org/napac2022/papers/mopa43.pdf">Paper (PDF)</a>
+      <a href="https://jacow.org/napac2022/posters/mopa43_poster.pdf">Poster (PDF)</a>
+      <button id="bibBtn" class="linkish" type="button" aria-expanded="false" aria-controls="bib" hidden>BibTeX</button>
+    </p>
+    <pre id="bib" class="bibtex no-print" tabindex="0" aria-label="BibTeX entry"><code>@inproceedings{kireeff:napac2022-mopa43,
+  author    = {M. Kireeff and P. Bloemhard and T. Hassan and L. Phair},
+  title     = {{Dee Voltage Regulator for the 88-Inch Cyclotron}},
+  booktitle = {Proc. 5th North American Particle Accelerator Conf. (NAPAC'22)},
+  address   = {Albuquerque, NM, USA},
+  month     = aug,
+  year      = {2022},
+  pages     = {147--150},
+  publisher = {JACoW Publishing},
+  doi       = {10.18429/JACoW-NAPAC2022-MOPA43},
+  url       = {https://jacow.org/napac2022/papers/mopa43.pdf}
+}</code></pre>
+    <script>
+      /* fold the BibTeX entry away behind its button (it stays visible if scripts are off) */
+      (() => {
+        const btn = document.getElementById('bibBtn'), bib = document.getElementById('bib');
+        bib.hidden = true; btn.hidden = false;
+        btn.addEventListener('click', () => {
+          bib.hidden = !bib.hidden;
+          btn.setAttribute('aria-expanded', String(!bib.hidden));
+        });
+      })();
+    </script>
+  </section>
+
+  <section id="skills" aria-labelledby="h-skills">
+    <h2 id="h-skills">Technical Skills</h2>
+    <div class="facts">
+      <p><strong>Languages:</strong> Python, JavaScript, Java, Arduino (C++), C, MATLAB, SML</p>
+      <p><strong>ML &amp; Data Libraries:</strong> PyTorch, NumPy, Hugging Face, TensorFlow, Scikit-learn, Beautiful Soup, Pandas</p>
+      <p><strong>Cloud &amp; Developer Tools:</strong> GCP, AWS, Git</p>
+      <p><strong>CAD:</strong> Fusion 360, SketchUp</p>
     </div>
   </section>
 
-  <!-- ════════ RESUME ════════ -->
-  <section id="resume" class="sec">
-    <header class="sec-head">
-      <h2><span class="tilde">~/</span>resume</h2>
-      <p class="sub">experience · education · skills</p>
-    </header>
-    <div class="panel">
-      <div class="panel-body">
-        <!-- EDIT: your actual experience / education / skills -->
-        <div class="r-h">EXPERIENCE</div>
-        <div class="r-row"><span class="when">2025 — now</span><span class="what"><b>ML Engineer · Your Company</b> — training and shipping vision models end-to-end</span></div>
-        <div class="r-row"><span class="when">2023 — 2025</span><span class="what"><b>Research Assistant · Your Lab</b> — efficient transformer architectures</span></div>
-        <div class="r-h">EDUCATION</div>
-        <div class="r-row"><span class="when">2021 — 2025</span><span class="what"><b>B.S. Computer Science · Your University</b> — focus: machine learning</span></div>
-        <div class="r-h">SKILLS</div>
-        <div class="r-row"><span class="when">&nbsp;</span><span class="what">python · pytorch · jax · cuda (basics) · linux · git · docker</span></div>
-        <div class="btnrow">
-          <!-- EDIT: drop a resume.pdf next to index.html and this just works -->
-          <a class="btn" href="resume.pdf" download>↓ download resume.pdf</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════ CONTACT ════════ -->
-  <section id="contact" class="sec">
-    <header class="sec-head">
-      <h2><span class="tilde">~/</span>contact</h2>
-      <p class="sub">the inbox is open. say hi.</p>
-    </header>
-    <div class="panel">
-      <div class="panel-body">
-        <!-- EDIT: your real handles -->
-        <div class="c-row"><span class="k">email</span><span><a href="mailto:you@example.com">you@example.com</a></span></div>
-        <div class="c-row"><span class="k">github</span><span><a href="https://github.com/yourhandle" rel="me">github.com/yourhandle</a></span></div>
-        <div class="c-row"><span class="k">scholar</span><span><a href="#">scholar.google.com/citations?user=…</a></span></div>
-        <div class="c-row"><span class="k">linkedin</span><span><a href="#">linkedin.com/in/yourhandle</a></span></div>
-        <div class="btnrow">
-          <a class="btn" href="mailto:you@example.com?subject=hello%20from%20the%20pond">→ send a message</a>
-        </div>
-        <p class="note"># avg response time: 1–2 business rains</p>
-      </div>
+  <section id="contact" aria-labelledby="h-contact">
+    <h2 id="h-contact">Contact</h2>
+    <!-- EDIT: add lines here for LinkedIn, Scholar and so on -->
+    <div class="facts">
+      <p><strong>Email:</strong> <a class="mail" href="#contact" data-u="ffeerikm" data-h="moc.liamg">show address</a><noscript> (hidden from scrapers; it needs JavaScript to appear)</noscript></p>
+      <p><strong>GitHub:</strong> <a href="https://github.com/mk-afk" rel="me">github.com/mk-afk</a></p>
     </div>
   </section>
 
 </main>
 
-<footer>
-  <span class="x">· fin ·</span><br>
-  © 2026 Your Name · built with canvas, coffee, and rain · <a href="#">source</a><!-- EDIT: link your repo -->
+<footer class="site-foot">
+  <p>© 2026 Michael Kireeff. Set in Latin Modern, the typeface of LaTeX. The pond is drawn on a canvas; none of it is an image. <a href="https://github.com/mk-afk/mk-afk.github.io">Source</a></p>
 </footer>
 
+<script>
+  /* The email address is never written out in this file. It is put together
+     here, and only once a person actually moves, taps or types, so bots that
+     harvest addresses (even ones that run scripts) come away with nothing.
+     EDIT: on each <a class="mail">, data-u is the part before the @ and data-h
+     the part after it, both spelled backwards. */
+  (() => {
+    const links = document.querySelectorAll('a.mail');
+    const flip = s => s.split('').reverse().join('');
+    const signs = ['pointermove', 'pointerdown', 'touchstart', 'keydown', 'wheel'];
+    function reveal() {
+      signs.forEach(ev => removeEventListener(ev, reveal, true));
+      links.forEach(a => {
+        const addr = flip(a.dataset.u) + '@' + flip(a.dataset.h);
+        a.href = 'mailto:' + addr;
+        a.textContent = addr;
+      });
+    }
+    signs.forEach(ev => addEventListener(ev, reveal, { capture: true, passive: true }));
+  })();
+</script>
+<script src="pond.js"></script>
+<script src="water.js"></script>
+<script src="afloat.js"></script>
 <script src="home.js"></script>
 </body>
 </html>

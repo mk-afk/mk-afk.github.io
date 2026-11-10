@@ -1,265 +1,299 @@
-/* ── tokens ─────────────────────────────────────────────── */
-:root, html[data-theme="dark"]{
-  --bg:        #0a1715;   /* deep pond night */
-  --bg2:       #0c1d1a;
-  --ink:       #c9d8c7;   /* soft sage text */
-  --dim:       #7e9489;
-  --faint:     #54675e;   /* comments */
-  --amber:     #e8b07e;   /* warm lamp / paths */
-  --orange:    #e07a4f;   /* koi orange */
-  --green:     #92c8a2;   /* prompt user */
-  --panel:     rgba(10,23,20,.78);
-  --line:      rgba(151,200,176,.14);
-  --head:      #eef2e9;            /* brightest headings */
-  --veil:      #06110f;            /* scroll dim layer */
-  --navbg:     rgba(8,18,16,.72);  /* toolbar */
-  --pool:      rgba(4,10,9,.58);   /* hero shade pool */
-  --poolhalo:  0 0 70px 36px rgba(4,10,9,.52);
-  --tsh:       0 1px 12px rgba(2,8,7,.5);
-  --acc-rgb:   232,176,126;        /* accent r,g,b for alpha mixes */
-  --linkhover: #f3c89a;
-  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-          "Liberation Mono", monospace;
-}
-html[data-theme="light"]{
-  --bg:        #fffefb;   /* the pond on paper */
-  --bg2:       #f6f3ea;
-  --ink:       #23231e;
-  --dim:       #6f6f63;
-  --faint:     #9a9a8c;
-  --amber:     #a3622a;
-  --orange:    #c2532c;
-  --green:     #2f6e4f;
-  --panel:     rgba(255,254,251,.6);
-  --line:      #e7e2d6;
-  --head:      #14140f;
-  --veil:      #fffefb;
-  --navbg:     rgba(255,254,251,.82);
-  --pool:      rgba(255,254,251,.62);
-  --poolhalo:  0 0 70px 36px rgba(255,254,251,.65);
-  --tsh:       0 1px 10px rgba(255,254,251,.7);
-  --acc-rgb:   163,98,42;
-  --linkhover: #7c4615;
-}
-*{ box-sizing:border-box }
-html{ scrollbar-color:#23433a var(--bg); }
-@media (prefers-reduced-motion: no-preference){
-  html{ scroll-behavior:smooth }
-}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--mono);
-  font-size:15px;
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-::selection{ background:rgba(var(--acc-rgb),.28); color:#fff }
-a{ color:var(--amber); text-decoration:underline; text-decoration-style:dotted;
-   text-underline-offset:3px; border-radius:2px }
-a:hover{ color:var(--linkhover); background:rgba(var(--acc-rgb),.08) }
-:focus-visible{ outline:1px dashed var(--amber); outline-offset:3px }
-::-webkit-scrollbar{ width:10px }
-::-webkit-scrollbar-track{ background:var(--bg) }
-::-webkit-scrollbar-thumb{ background:#1d3b33; border-radius:6px; border:2px solid var(--bg) }
+/* ════════════════════════════════════════════════════════════
+   home.css · loaded by every page
+   The idea: a résumé typeset the way LaTeX would set it, on a sheet
+   of paper lying on a koi pond. The paper is black on white and
+   nothing else; the only colour on the page is the fish.
+   (ideas.css adds the few extra rules the ideas page and posts need.)
+   ════════════════════════════════════════════════════════════ */
 
-/* film grain — barely there */
-body::after{
-  content:""; position:fixed; inset:0; z-index:60; pointer-events:none;
-  opacity:.05; mix-blend-mode:overlay;
-  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="120" height="120" filter="url(%23n)" opacity="0.55"/></svg>');
+/* ── type: Latin Modern, the LaTeX default ───────────────────
+   Subset to Latin and renamed "LMWeb"; see fonts/README.txt */
+@font-face { font-family: "LMWeb Roman"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-roman10-regular.woff2") format("woff2"); }
+@font-face { font-family: "LMWeb Roman"; font-weight: 400; font-style: italic; font-display: swap;
+  src: url("fonts/lmweb-roman10-italic.woff2") format("woff2"); }
+@font-face { font-family: "LMWeb Roman"; font-weight: 700; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-roman10-bold.woff2") format("woff2"); }
+@font-face { font-family: "LMWeb Roman"; font-weight: 700; font-style: italic; font-display: swap;
+  src: url("fonts/lmweb-roman10-bolditalic.woff2") format("woff2"); }
+/* the optical sizes LaTeX itself switches to for big type */
+@font-face { font-family: "LMWeb Display"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-roman17-regular.woff2") format("woff2"); }
+@font-face { font-family: "LMWeb Display"; font-weight: 700; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-roman12-bold.woff2") format("woff2"); }
+/* true small caps, for section headings (\scshape) */
+@font-face { font-family: "LMWeb Caps"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-romancaps10-regular.woff2") format("woff2"); }
+@font-face { font-family: "LMWeb Mono"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/lmweb-mono10-regular.woff2") format("woff2"); }
+
+/* ── tokens ──────────────────────────────────────────────── */
+:root {
+  --paper: #fff;
+  --ink: #000;
+  --koi: #c8431f;                 /* hover and focus only */
+
+  --serif: "LMWeb Roman", "Latin Modern Roman", "LM Roman 10", "CMU Serif", "Times New Roman", Times, serif;
+  --display: "LMWeb Display", var(--serif);
+  --caps: "LMWeb Caps", "Latin Modern Roman Caps", var(--serif);
+  --mono: "LMWeb Mono", "Latin Modern Mono", "LM Mono 10", ui-monospace, Menlo, Consolas, monospace;
+
+  --sheet-w: 58rem;
+  --gutter-l: clamp(1rem, 8vw, 9.5rem);   /* water to the left of the paper */
+  --gutter-r: clamp(1rem, 4vw, 3.5rem);
+  --lift: clamp(2rem, 7vh, 4.5rem);       /* water above the paper */
+}
+:root, html[data-theme="dark"] {          /* night pond */
+  color-scheme: dark;
+  --water: #081714;
+  --on-water: #eef3ee;
+  --on-water-dim: rgba(238, 243, 238, .74);
+  --sheet-shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 34px 70px -26px rgba(0, 0, 0, .8), 0 6px 18px rgba(0, 0, 0, .38);
+  --scroll-thumb: #24443b;
+}
+html[data-theme="light"] {                /* day pond */
+  color-scheme: light;
+  --water: #dbe8e3;
+  --on-water: #000;
+  --on-water-dim: rgba(0, 0, 0, .68);
+  --sheet-shadow: 0 0 0 1px rgba(30, 60, 52, .09), 0 28px 60px -28px rgba(30, 60, 52, .6), 0 3px 10px rgba(30, 60, 52, .13);
+  --scroll-thumb: #a9c0b8;
 }
 
-/* ── pond layers ────────────────────────────────────────── */
-#pond{
-  position:fixed; inset:0; z-index:0; display:block;
-  transition:filter .8s ease;
+/* ── base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scrollbar-color: var(--scroll-thumb) var(--water); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--water);
+  color: var(--on-water);
+  font-family: var(--serif);
+  font-size: clamp(1.06rem, .99rem + .3vw, 1.125rem);
+  line-height: 1.45;
+  word-spacing: -.03em;                       /* TeX's word space is a touch wide for a screen */
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;   /* the ff in Kireeff */
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
 }
-.deep #pond{ filter:blur(2.2px) saturate(.82) brightness(.8) }
-#dim{
-  position:fixed; inset:0; z-index:1; pointer-events:none;
-  background:var(--veil); opacity:0;
+::selection { background: rgba(200, 67, 31, .24); }
+
+a { color: inherit; text-decoration: underline; text-decoration-thickness: .055em; text-underline-offset: .17em; }
+a:hover { color: var(--koi); }
+:focus-visible { outline: 2px solid var(--koi); outline-offset: 3px; border-radius: 1px; }
+
+.skip {
+  position: absolute; left: .75rem; top: -4rem; z-index: 10;
+  padding: .4rem .8rem; background: var(--paper); color: var(--ink);
+}
+.skip:focus { top: .75rem; }
+
+/* a button that reads as a link */
+.linkish {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: .055em; text-underline-offset: .17em;
+}
+.linkish:hover { color: var(--koi); }
+
+/* ── the pond ────────────────────────────────────────────── */
+#pond, #water {                                  /* #water: the same picture again with its ripples bent, laid over the first by water.js */
+  position: fixed; left: 0; top: 0; z-index: 0; display: block;
+  width: 100vw; height: 100vh; height: 100lvh;   /* largest viewport: no resize when a phone's address bar hides */
+  pointer-events: none;                          /* scenery: clicks and touches go straight through it */
 }
 
-/* ── nav ────────────────────────────────────────────────── */
-nav{
-  position:fixed; top:0; left:0; right:0; z-index:50;
-  display:flex; align-items:center; gap:14px;
-  padding:9px 22px;
-  background:var(--navbg);
-  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line);
-  font-family:var(--mono);
-  font-size:13px;
-  overflow-x:auto; scrollbar-width:none;
+/* ── what sits on the water: header, caption, footer ─────── */
+/* The header is one line resting on the paper's top edge: the mark at the
+   paper's left corner, the directory ending at its right corner, and the
+   pond's own Night | Day switch out over the water. */
+.site-head {
+  position: relative; z-index: 3;
+  display: grid; align-items: center;
+  grid-template-columns: var(--gutter-l) min(var(--sheet-w), 100% - var(--gutter-l) - var(--gutter-r)) 1fr var(--gutter-r);
+  padding-top: calc(var(--lift) + .55rem);            /* open water first; the paper follows straight after the line */
+  color: var(--on-water);
+  text-shadow: 0 0 .7em var(--water), 0 0 .25em var(--water);
 }
-nav::-webkit-scrollbar{ display:none }
-.brand{ color:var(--dim); text-decoration:none; white-space:nowrap }
-.brand:hover{ background:none; color:var(--ink) }
-.brand .u{ color:var(--green) } .brand .h{ color:var(--amber) }
-.navlinks{ display:flex; gap:4px; margin-left:auto }
-.navlink{
-  color:var(--dim); text-decoration:none; padding:4px 10px;
-  border-radius:6px; white-space:nowrap;
+.brand { grid-area: 1 / 2; justify-self: start; display: inline-flex; align-items: center; gap: .5em; font-weight: 700; text-decoration: none; }
+.brand svg { width: 1.35em; height: 1.35em; flex: none; overflow: visible; filter: drop-shadow(0 0 .35em var(--water)); }
+.brand--mark svg { width: 1.9em; height: 1.9em; margin-left: -.3em; }   /* home page: the name is on the paper already */
+.brand--mark span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.site-nav {                                            /* the directory: set in the same small capitals as the headings it points to */
+  grid-area: 1 / 2; justify-self: end;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 1.3rem;
+  font-family: var(--caps); font-size: 1.06em;
 }
-.navlink:hover{ color:var(--ink); background:rgba(151,200,176,.08) }
-.navlink.active{ color:var(--amber); background:rgba(var(--acc-rgb),.12) }
-.tbtn{
-  font:inherit; font-size:13px; color:var(--dim);
-  background:none; border:none; padding:0 2px; cursor:pointer; white-space:nowrap;
-}
-.tbtn:hover{ color:var(--orange); text-decoration:underline }
-.tbtn[aria-pressed="true"]{ color:var(--green) }
+.site-nav .sep { opacity: .55; }                       /* sections of this page | other pages */
+.site-nav a { text-decoration: none; }
+.site-nav a:hover, .site-nav a[aria-current] { color: inherit; text-decoration: underline; }
 
-/* ── layout ─────────────────────────────────────────────── */
-main{ position:relative; z-index:2 }
-.sec{
-  max-width:980px; margin:0 auto;
-  padding:110px 22px 30px;
-  scroll-margin-top:54px;
+.site-nav a { padding: .35em 0; }                      /* taller targets for thumbs */
+.theme-switch { grid-area: 1 / 3; justify-self: end; white-space: nowrap; }
+.theme-switch button {
+  font: inherit; color: inherit; background: none; border: 0; margin: 0; padding: .35em .05em; cursor: pointer;
+  text-shadow: inherit; opacity: .62;
 }
-.sec-head{ margin:0 0 22px; padding-bottom:12px; border-bottom:1px solid var(--line) }
-.sec-head h2{
-  margin:0; font-size:19px; font-weight:700; letter-spacing:.4px;
-  color:var(--head);
-}
-.sec-head h2 .tilde{ color:var(--amber); font-weight:400; margin-right:2px }
-.sec-head .sub{ margin:4px 0 0; color:var(--dim); font-size:13.5px }
-.note{ color:var(--faint); font-size:13px; margin-top:14px }
+.theme-switch button:hover { opacity: 1; }
+.theme-switch button[aria-pressed="true"] { opacity: 1; text-decoration: underline; text-underline-offset: .17em; text-decoration-thickness: .055em; }
+.theme-switch .sep { margin: 0 .38em; opacity: .55; }
+html:not(.pond-on) .theme-switch { display: none; }   /* nothing to switch without the pond script */
 
-/* ── no cards — type sits directly on the water ─────────── */
-.panel{ position:relative }
-.panel-body{ padding:0 }
+/* the pond gets a caption, like any figure */
+.fig-caption {
+  position: fixed; z-index: 1; right: var(--gutter-r); bottom: 1.3rem;
+  margin: 0; text-align: right;
+  max-width: min(24rem, 100vw - var(--gutter-l) - var(--sheet-w) - var(--gutter-r) - 1.5rem);   /* never wider than the open water */
+  font-size: .9em; line-height: 1.35;
+  color: var(--on-water);
+  text-shadow: 0 0 .7em var(--water), 0 0 .25em var(--water);
+}
+.fig-caption .cap-line { display: block; }
+html:not(.pond-on) .fig-caption { display: none; }
 
-/* hero */
-.hero{
-  min-height:100svh;
-  display:grid;
-  grid-template-columns:minmax(0,580px) 1fr;
-  align-items:center;
-  gap:40px;
-  padding:90px 5vw 50px;
-  position:relative;
+.site-foot {
+  position: relative; z-index: 2;
+  width: min(var(--sheet-w), 100% - var(--gutter-l) - var(--gutter-r));
+  margin: 1.5rem 0 2.6rem var(--gutter-l);
+  font-size: .88em; color: var(--on-water-dim);
+  text-shadow: 0 0 .7em var(--water);
 }
-.hero-card{
-  width:100%;
-  padding:42px 46px 36px;
-  border-radius:34px;
-  background:var(--pool);
-  box-shadow:var(--poolhalo);
-  text-shadow:var(--tsh);
-}
-.hero-id{ display:flex; align-items:center; gap:16px; margin:0 0 20px }
-.avatar{
-  width:84px; height:84px; border-radius:50%; object-fit:cover;
-  border:1px solid var(--line);
-  box-shadow:0 6px 24px rgba(0,0,0,.35);
-  filter:saturate(.88) brightness(.96);
-  flex:none;
-}
-.hero-name{
-  margin:0 0 4px; font-size:clamp(26px, 4vw, 38px); font-weight:700;
-  color:var(--head); letter-spacing:.4px; line-height:1.2;
-}
-.hero-tag{ margin:0; color:var(--dim); font-size:14.5px }
-.hero-cta{ margin-top:20px; display:flex; gap:12px; flex-wrap:wrap }
-.term{ font-size:14.5px; min-height:150px }
-.prompt-line{ margin:10px 0 2px; word-break:break-word }
-.prompt-line .u{ color:var(--green) }
-.prompt-line .h{ color:var(--green) }
-.prompt-line .p{ color:var(--amber) }
-.prompt-line .d{ color:var(--green) }
-.prompt-line .d{ color:var(--dim) }
-.out{ color:var(--ink); margin:2px 0 6px; word-break:break-word }
-.out .name{ color:#f0e8d8; font-weight:700 }
-.out a{ margin-right:14px }
-.out .dir{ color:var(--amber) }
-.out .file{ color:var(--ink) }
-.out .exec{ color:var(--green) }
-.cursor::after{
-  content:"█"; color:var(--green); margin-left:2px;
-  animation:blink 1.1s steps(1) infinite;
-}
-@keyframes blink{ 50%{ opacity:0 } }
-@media (prefers-reduced-motion: reduce){ .cursor::after{ animation:none } }
-.hero-hint{
-  position:absolute; right:4vw; bottom:26px;
-  color:var(--faint); font-size:12.5px;
-  text-shadow:0 1px 8px rgba(0,0,0,.6);
-}
+.site-foot p { margin: 0; }
 
-/* projects */
-.grid{
-  display:grid; gap:26px 24px;
-  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+/* ── the paper ───────────────────────────────────────────── */
+.sheet {
+  position: relative; z-index: 2;
+  width: min(var(--sheet-w), 100% - var(--gutter-l) - var(--gutter-r));
+  margin: .45rem 0 0 var(--gutter-l);
+  padding: clamp(1.7rem, 5.4vw, 4rem) clamp(1.15rem, 6vw, 4rem) clamp(2.1rem, 6vw, 4.2rem);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--sheet-shadow);
 }
-.card{ border-top:1px solid var(--line); transition:transform .25s ease, border-color .25s ease }
-.card:hover{ transform:translateY(-3px); border-color:rgba(var(--acc-rgb),.45) }
-.card .panel-body{ padding:16px 2px 0 }
-.card h3{
-  margin:0 0 8px; font-size:16px; font-weight:700; color:var(--head);
-  letter-spacing:.2px;
+.sheet { color-scheme: light; }                       /* the paper is always white */
+.sheet section { scroll-margin-top: 1rem; }
+/* A directory link has just brought the reader to this section. Near the foot of the page there is
+   nothing left to scroll, so the heading is marked too: a spot of koi red in the margin beside it. */
+.sheet section:target > h2 { position: relative; }
+.sheet section:target > h2::before {
+  content: ""; position: absolute; left: -.74em; top: .41em;
+  width: .36em; height: .36em; border-radius: 50%; background: var(--koi);
 }
-.card p{ margin:0 0 14px; color:var(--dim); font-size:13.5px }
-.tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px }
-.tags span{
-  font-size:11.5px; color:var(--green);
-  background:rgba(146,200,162,.1);
-  border:1px solid rgba(146,200,162,.18);
-  padding:2px 8px; border-radius:99px;
+@media (prefers-reduced-motion: no-preference) {
+  .sheet section:target > h2::before { animation: arrive .7s cubic-bezier(.2, .7, .2, 1) both; }
+  @keyframes arrive { from { opacity: 0; transform: scale(2.6); } }
 }
-.links{ font-size:13px; display:flex; gap:16px }
+.sheet > :first-child { margin-top: 0; }
+.sheet > :last-child { margin-bottom: 0; }
 
-/* papers */
-.paper{ padding:4px 0 }
-.paper .idx{ color:var(--faint) }
-.ptitle{ color:var(--head); font-weight:700 }
-.pmeta{ color:var(--dim); font-size:13.5px; margin:4px 0 8px }
-.plinks{ font-size:13px; display:flex; gap:14px; flex-wrap:wrap }
-
-/* resume */
-.r-h{ color:var(--green); margin:18px 0 6px; font-size:13px; letter-spacing:1.5px }
-.r-h:first-child{ margin-top:0 }
-.r-row{ display:grid; grid-template-columns:118px 1fr; gap:14px; padding:5px 0;
-        font-size:14px }
-.r-row .when{ color:var(--faint) }
-.r-row .what b{ color:var(--head); font-weight:700 }
-.r-row .what{ color:var(--dim) }
-.btnrow{ margin-top:22px; display:flex; gap:14px; flex-wrap:wrap }
-.btn{
-  display:inline-block; font-size:13.5px; text-decoration:none;
-  color:var(--amber); border:1px solid rgba(var(--acc-rgb),.45);
-  padding:8px 16px; border-radius:8px; background:rgba(var(--acc-rgb),.06);
-  transition:background .2s ease, transform .2s ease;
+/* name and contact line, as on the PDF */
+.masthead { text-align: center; margin-bottom: 1.5rem; }
+.masthead h1 {
+  margin: 0 0 .3rem;
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(1.95rem, 1.1rem + 4.6vw, 3.45rem);
+  line-height: 1.08; text-wrap: balance;
 }
-.btn:hover{ background:rgba(var(--acc-rgb),.16); transform:translateY(-1px) }
+.contact-line { margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .6em; }
+.contact-line .sep { user-select: none; }
+.contact-line [hidden] { display: none; }
+.contact-line .slot { display: inline-flex; gap: 0 .6em; }
 
-/* contact */
-.c-row{ display:grid; grid-template-columns:96px 1fr; gap:14px; padding:5px 0;
-        font-size:14px }
-.c-row .k{ color:var(--green) }
+.lede { margin: 0 0 .4rem; text-wrap: pretty; }
 
-footer{
-  position:relative; z-index:2;
-  text-align:center; color:var(--faint); font-size:12.5px;
-  padding:70px 20px 36px;
-}
-footer .x{ color:var(--dim) }
-
-/* ── responsive ─────────────────────────────────────────── */
-@media (max-width:880px){
-  .hero{ grid-template-columns:1fr; align-content:center; gap:0 }
-  .hero-hint{ display:none }
-  .sec{ padding-top:92px }
-  .hero-card{ padding:34px 24px 30px }
-  .r-row,.c-row{ grid-template-columns:1fr; gap:2px }
-  .r-row .when{ font-size:12px }
+/* section heading: small caps over a rule */
+.sheet h2 {
+  margin: 1.75rem 0 .6rem; padding-bottom: .1rem;
+  font-family: var(--caps); font-weight: 400; font-size: 1.2em; line-height: 1.2;
+  letter-spacing: .01em;
+  border-bottom: 1px solid var(--ink);
 }
 
-/* ── day-mode adjustments ───────────────────────────────── */
-html[data-theme="light"] body::after{ mix-blend-mode:multiply; opacity:.045 }
-html[data-theme="light"].deep #pond{ filter:blur(2.2px) saturate(1) brightness(1.01) }
-html[data-theme="light"]{ scrollbar-color:#cfc9b8 var(--bg) }
-html[data-theme="light"] ::-webkit-scrollbar-thumb{ background:#d8d2c2 }
+/* one résumé entry:   title ………… side          (bold ………… roman)
+                        sub   ………… subside       (italic ……… italic)   */
+.entry { margin: 0 0 .85rem; padding-left: .9rem; }
+.entry:last-child { margin-bottom: 0; }
+.entry-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1.1rem; align-items: baseline; }
+.entry-head > * { margin: 0; }
+.e-title   { grid-area: 1 / 1; font-size: 1em; font-weight: 700; line-height: 1.3; }
+.e-side    { grid-area: 1 / 2; text-align: right; white-space: nowrap; }
+.e-sub     { grid-area: 2 / 1; font-style: italic; font-size: .95em; }
+.e-subside { grid-area: 2 / 2; font-style: italic; font-size: .95em; text-align: right; white-space: nowrap; }
+.entry ul { margin: .28rem 0 0; padding-left: 1.4rem; font-size: .95em; }
+.entry li { margin: .1rem 0; padding-left: .1rem; text-wrap: pretty; }
+.entry li::marker { font-size: .72em; }
+
+.plain { margin: 0 0 .5rem; padding-left: .9rem; text-wrap: pretty; }   /* a paragraph inside a section */
+.plain:last-child { margin-bottom: 0; }
+.facts { margin: 0; padding-left: .9rem; }                              /* Label: value lines */
+.facts p { margin: 0 0 .12rem; }
+
+.cite-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem 1.15rem; font-size: .95em; }
+.bibtex { margin: .45rem 0 0; padding-left: .9rem; }
+.bibtex[hidden] { display: none; }
+pre, code { font-family: var(--mono); font-size: .95em; }
+pre { margin: 0; overflow-x: auto; line-height: 1.32; -webkit-overflow-scrolling: touch; }
+
+.aside-note { font-style: italic; font-size: .93em; }
+.nb { white-space: nowrap; }
+
+/* ── narrower screens: no room for water beside the paper,
+      so centre it and leave a band of pond above ─────────── */
+@media (max-width: 79.99rem) {
+  :root { --gutter-l: clamp(.5rem, 3vw, 2rem); --gutter-r: var(--gutter-l); }
+  .site-head {                                         /* the line goes to the top of the screen, as wide as the paper */
+    display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1.5rem;
+    width: min(var(--sheet-w), 100% - var(--gutter-l) - var(--gutter-r)); margin: 0 auto; padding-top: 1.15rem;
+  }
+  .site-nav { margin-left: auto; }
+  .sheet { margin: 0 auto; }
+  html:not(.pond-on) .sheet { margin-top: 1.5rem; }
+  .fig-caption {
+    position: relative; right: auto; bottom: auto; z-index: 2;
+    min-height: clamp(11rem, 30vh, 19rem); min-height: clamp(11rem, 30svh, 19rem);
+    max-width: none; padding: 0 var(--gutter-r) .85rem;
+    display: flex; align-items: flex-end; justify-content: center; text-align: center;
+  }
+  .fig-caption > span { max-width: 24rem; }
+  .fig-caption .cap-line { display: inline; }
+  .site-foot { margin-inline: auto; text-align: center; }
+}
+
+@media (max-width: 52rem) {
+  .site-nav .roomy { display: none; }                  /* the two sections a short line can do without */
+}
+
+@media (max-width: 40rem) {
+  .site-head { padding-top: .9rem; }
+  .site-nav {                                          /* a line of its own under the mark; small capitals are too wide for it, so plain roman here */
+    order: 3; flex-basis: 100%; margin-left: 0; gap: .2rem .85rem;
+    font-family: inherit; font-size: 1em;
+  }
+  .theme-switch { margin-left: auto; }
+  .contact-line { flex-direction: column; align-items: center; }
+  .contact-line .sep { display: none; }
+  .entry, .plain, .facts, .bibtex { padding-left: 0; }
+  .entry-head { column-gap: .9rem; }
+  .e-title   { grid-area: 1 / 1 / 2 / 3; }
+  .e-sub     { grid-area: 2 / 1 / 3 / 3; }
+  .e-side    { grid-area: 3 / 1; text-align: left; font-size: .95em; white-space: normal; }
+  .e-subside { grid-area: 3 / 2; }
+  .entry ul { padding-left: 1.15rem; }
+}
+
+@media (max-width: 23rem) {
+  .site-nav { font-size: .92em; gap: .2rem .55rem; }
+  .site-nav .sep { display: none; }
+}
+
+/* ── print: just the paper ───────────────────────────────── */
+@media print {
+  @page { margin: .6in; }
+  html, body { background: #fff; }
+  #pond, #water, .site-head, .fig-caption, .site-foot, .skip, .no-print, .sheet section:target > h2::before { display: none !important; }
+  .sheet { width: auto; margin: 0; padding: 0; box-shadow: none; }
+  body { font-size: 10.5pt; }
+  .entry { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  a { text-decoration: none; }
+}

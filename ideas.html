@@ -3,127 +3,120 @@
 <head>
 <!--
   ─────────────────────────────────────────────────────────────
-  projects & ideas · an index of pages you'll make
-  (companion to index.html)
+  Ideas: an index of write-ups
 
   ADDING AN ENTRY (two small steps):
-    1. copy posts/hello-pond.html to posts/your-idea.html
-       and write it.
-    2. add one row to the index below pointing at it. flip
-       [planned] to [live] and add a date once it exists.
-    A row can also point straight at an external link
-    (repo, demo, arXiv, Colab) instead of a posts/ page.
+    1. copy posts/hello-pond.html to posts/your-idea.html and
+       write it.
+    2. copy an <article class="entry"> block below and point it
+       at the new page. The right-hand column is the date.
+    An entry can also link straight to something external
+    (a repo, a demo, a paper) instead of a posts/ page.
 
-  THEME: dark (night pond) is the default. the ☀/☾ button
-  switches to a paper day mode and remembers the choice.
-
-  the background is the calm pond: ripples, lily pads, drifting
-  light, and a school of small fish (boids: separation, alignment,
-  cohesion). tap the water to scatter them.
-
-  files: ideas.html + ideas.css + ideas.js + posts/*.html
+  The pond here holds a school of small fish instead of koi
+  (ideas.js). The water, lily pads and rain are pond.js; the
+  moon and the season's weather are afloat.js; water.js lets
+  the rings bend the water where the device has WebGL.
   ─────────────────────────────────────────────────────────────
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- EDIT: your name -->
-<title>projects &amp; ideas — your name</title>
-<meta name="description" content="An index of projects I'm building and ideas I'm exploring.">
-<meta name="theme-color" content="#0a1715">
-<meta property="og:title" content="projects & ideas — your name">
-<meta property="og:description" content="An index of projects I'm building and ideas I'm exploring.">
+<title>Ideas – Michael Kireeff</title>
+<meta name="description" content="Things Michael Kireeff is building and thinking about.">
+<link rel="canonical" href="https://mk-afk.github.io/ideas.html">
+<meta name="theme-color" content="#081714">
+<meta name="robots" content="noai, noimageai">
+<meta name="tdm-reservation" content="1">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="%230d211d"/><circle cx="50" cy="50" r="33" fill="%23e07a4f"/><path d="M28 56 Q46 30 72 40 Q62 62 32 64 Z" fill="%23f2efe6"/><circle cx="40" cy="46" r="8" fill="%2326282c"/></svg>'>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta property="og:url" content="https://mk-afk.github.io/ideas.html">
+<meta property="og:title" content="Ideas – Michael Kireeff">
+<meta property="og:description" content="Things I'm building and things I'm thinking about.">
+<meta property="og:image" content="https://mk-afk.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Night or Day, settled before anything is painted -->
+<script src="theme.js"></script>
+<script>
+  /* fetch the first screen's two fonts early (browsers refuse this when the page is opened straight from a folder) */
+  if (location.protocol !== 'file:') for (const f of ['fonts/lmweb-roman10-regular.woff2', 'fonts/lmweb-roman12-bold.woff2'])
+    document.head.insertAdjacentHTML('beforeend', '<link rel="preload" as="font" type="font/woff2" crossorigin href="' + f + '">');
+</script>
 <link rel="stylesheet" href="home.css">
 <link rel="stylesheet" href="ideas.css">
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to the list</a>
 <canvas id="pond" aria-hidden="true"></canvas>
-<div id="dim" aria-hidden="true"></div>
 
-<nav aria-label="site">
-  <a class="brand" href="index.html"><span class="h">~</span>/koipond</a>
-  <div class="navlinks">
-    <a class="navlink" href="index.html">home</a>
-    <a class="navlink" href="index.html#projects">projects</a>
-    <a class="navlink" href="index.html#papers">papers</a>
-    <a class="navlink active" href="ideas.html" aria-current="page">ideas</a>
-    <a class="navlink" href="index.html#resume">resume</a>
-    <a class="navlink" href="index.html#contact">contact</a>
-  </div>
-  <button id="themeBtn" class="tbtn" aria-pressed="false" title="toggle day / night">&#9728; day</button>
-</nav>
+<header class="site-head">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g transform="translate(16 16) rotate(40)"><path fill="currentColor" opacity=".78" d="M.2 8.2C-.6 10.4-2.6 11.9-3.3 14.3-1.6 14.1-.2 13.3.8 12.1 1.9 13.5 3.6 14.4 5.6 14.5 4.9 12.2 2.4 10.5.2 8.2ZM-3.5-4.8C-6.3-4.9-8.3-2.9-8.4-.2-6.3-.6-4.7-1.7-3.8-3ZM3.5-4.8C6.3-4.9 8.3-2.9 8.4-.2 6.3-.6 4.7-1.7 3.8-3Z"/><path fill="currentColor" d="M0-11.6C3.3-10.4 4.7-5.6 4.1-.8 3.6 3 1.9 6.6.3 9.4-1.5 6.6-3.4 3-4-.8-4.7-5.6-3.3-10.4 0-11.6Z"/><ellipse cy="-6.5" rx="2.25" ry="2.5" fill="#d9502c"/></g></svg>
+    <span>Michael Kireeff</span>
+  </a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="index.html">Resume</a>
+    <span class="sep" aria-hidden="true">|</span>
+    <a href="ideas.html" aria-current="page">Ideas</a>
+  </nav>
+  <div class="theme-switch" role="group" aria-label="Pond lighting"><button type="button" data-set-theme="dark" aria-pressed="true">Night</button><span class="sep" aria-hidden="true">|</span><button type="button" data-set-theme="light" aria-pressed="false">Day</button></div>
+</header>
 
-<main>
-  <section class="sec">
-    <header class="sec-head">
-      <h2><span class="tilde">~/</span>ideas</h2>
-      <p class="sub">things I'm building and things I'm thinking about &mdash; each gets its own page as it takes shape</p>
-    </header>
+<aside class="fig-caption" aria-label="About the pond"><span><span class="cap-line">Figure 1: A school of small fish.</span> <span class="cap-line"><span id="pondNote"></span> <button id="pondPause" class="linkish" type="button">Pause</button></span></span></aside>
 
-    <!--
-      HOW THIS PAGE WORKS — an index of pages you'll make.
-      To add an entry: copy posts/hello-pond.html to posts/your-idea.html,
-      write it, then add a row below pointing at it (flip [planned] to [live]
-      and add a date). A row can also point at an external link (repo, arXiv, demo).
+<main id="main" class="sheet">
+
+  <header class="masthead">
+    <h1>Ideas</h1>
+    <p class="sub">Things I’m building and things I’m thinking about. Each gets its own page as it takes shape.</p>
+  </header>
+
+  <section aria-labelledby="h-projects">
+    <h2 id="h-projects">Projects</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title"><a href="posts/hello-pond.html">The Koi Pond</a></h3>
+        <p class="e-side">Jun. 2026</p>
+        <p class="e-sub">How this site is drawn</p>
+      </div>
+    </article>
+
+    <!-- EDIT: copy this block for each new project. Delete the e-side line if there is no date yet.
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title"><a href="posts/your-project.html">Project name</a></h3>
+        <p class="e-side">Mon. 2026</p>
+        <p class="e-sub">One line on what it is</p>
+      </div>
+    </article>
     -->
-    <nav class="links" aria-label="index">
-      <h3>Projects</h3>
-      <a href="posts/hello-pond.html">
-        <span class="link-content">&gt; <strong>[live]</strong> The Koi Pond &mdash; how this site is drawn</span>
-        <span class="link-date">Jun 2026</span>
-      </a>
-      <a href="#">
-        <span class="link-content">&gt; <strong>[planned]</strong> Project Two &mdash; short description here</span>
-        <span class="link-date">soon</span>
-      </a>
-      <a href="#">
-        <span class="link-content">&gt; <strong>[planned]</strong> Project Three &mdash; short description here</span>
-        <span class="link-date">soon</span>
-      </a>
-
-      <h3>Ideas</h3>
-      <a href="#">
-        <span class="link-content">&gt; <strong>[idea]</strong> Something I want to try &mdash; one line on why</span>
-        <span class="link-date"></span>
-      </a>
-      <a href="#">
-        <span class="link-content">&gt; <strong>[idea]</strong> Another thread to pull on later</span>
-        <span class="link-date"></span>
-      </a>
-
-      <h3>Around the Site</h3>
-      <a href="index.html">
-        <span class="link-content">&gt; Home (the pond)</span>
-        <span class="link-date"></span>
-      </a>
-      <a href="index.html#projects">
-        <span class="link-content">&gt; Featured projects</span>
-        <span class="link-date"></span>
-      </a>
-      <a href="index.html#papers">
-        <span class="link-content">&gt; Papers</span>
-        <span class="link-date"></span>
-      </a>
-      <a href="index.html#resume">
-        <span class="link-content">&gt; Resume</span>
-        <span class="link-date"></span>
-      </a>
-      <a href="index.html#contact">
-        <span class="link-content">&gt; Contact</span>
-        <span class="link-date"></span>
-      </a>
-    </nav>
-
-    <p class="note">// a running list. it grows as I do.</p>
   </section>
+
+  <!-- EDIT: un-comment this section once there is an idea to list.
+  <section aria-labelledby="h-ideas">
+    <h2 id="h-ideas">Ideas</h2>
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="e-title">Something I want to try</h3>
+        <p class="e-sub">One line on why</p>
+      </div>
+    </article>
+  </section>
+  -->
+
+  <p class="index-note">A running list. It grows as I do.</p>
+
 </main>
 
+<footer class="site-foot">
+  <p>© 2026 Michael Kireeff. <a href="index.html">Back to the resume</a></p>
+</footer>
+
+<script src="pond.js"></script>
+<script src="water.js"></script>
+<script src="afloat.js"></script>
 <script src="ideas.js"></script>
 </body>
 </html>
